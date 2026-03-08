@@ -105,15 +105,6 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .srs-banner-sub{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:2px}
 .srs-banner-btn{background:rgba(139,114,245,.15);border:1px solid rgba(139,114,245,.3);border-radius:9px;padding:8px 13px;color:#8b72f5;font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation}
 .srs-banner-btn:active{opacity:.7}
-.srs-btn{background:rgba(139,114,245,.12)!important;border-color:rgba(139,114,245,.3)!important;color:#8b72f5!important}
-/* SRS BANNER */
-.srs-banner{background:rgba(139,114,245,.07);border:1px solid rgba(139,114,245,.25);border-radius:12px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.srs-banner-left{display:flex;align-items:center;gap:9px}
-.srs-banner-icon{font-size:18px}
-.srs-banner-text{font-size:13px;font-weight:600;color:var(--text)}
-.srs-banner-sub{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:2px}
-.srs-banner-btn{background:rgba(139,114,245,.15);border:1px solid rgba(139,114,245,.3);border-radius:9px;padding:8px 13px;color:#8b72f5;font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation}
-.srs-banner-btn:active{opacity:.7}
 .srs-btn{background:rgba(139,114,245,.12);border:1px solid rgba(139,114,245,.3);color:#8b72f5;}
 
 /* ============================================================
@@ -682,6 +673,8 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="badges-grid" id="badgesList"></div>
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
+    <div style="height:16px"></div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.4.1 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1064,6 +1057,18 @@ function addXP(n){
   updateDailyBar();
 }
 
+function tryParseJSON(raw){
+  try{
+    var s=raw.trim();
+    var m=s.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if(m)s=m[1].trim();
+    var i=s.indexOf('{');
+    if(i>0)s=s.slice(i);
+    // Try to fix truncated JSON by closing open structures
+    return JSON.parse(s);
+  }catch(e){return null;}
+}
+
 function shuffle(arr){
   var a=arr.slice();
   for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
@@ -1100,22 +1105,11 @@ function generateCards(){
   var isBeginnerLvl=(lvl==='A1'||lvl==='A2');
 
   var cfg=getLangCfg();
-  var tgt=cfg.targetLang; // 'espagnol' or 'anglais'
-  var tcode=cfg.targetCode; // 'ES' or 'EN'
+  var tgt=cfg.targetLang;
+  var tcode=cfg.targetCode;
   var prons=cfg.pronArray;
 
-  var glossInstructions=isBeginnerLvl
-    ? 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj"}] avec les verbes conjugues, mots irreguliers ou peu courants que ce niveau ne connait probablement pas encore. A1: beaucoup de mots glossaires. A2: mots moyennement courants.'
-    : 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj/expression"}] avec uniquement les mots rares, idiomatiques ou specifiques que ce niveau pourrait ne pas connaitre. B1/B2: quelques mots. C1: seulement les termes tres specifiques ou culturels.';
-  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+enSlangInstr;
-
-  var dist='';
-  if(lvl==='A1')dist='Genere '+CARDS_PER_DECK+' cartes vocab.';
-  else if(lvl==='A2')dist='Genere 4 vocab, 3 mcq, 3 translate.';
-  else if(lvl==='B1')dist='Genere 2 vocab, 3 mcq, 3 translate, 2 fill.';
-  else dist='Genere 2 mcq, 4 translate, 4 fill.';
-
-  // EN-specific slang & register instructions per level
+  // EN-specific slang & register instructions per level — MUST be before systemPrompt
   var enSlangInstr='';
   if(_lang==='en'){
     var enSlangMap={
@@ -1130,6 +1124,17 @@ function generateCards(){
     enSlangInstr='\n'+(enSlangMap[lvl]||enSlangMap['C1'])+'\nFor EVERY card: include a usage note in French about register (formal/informal/slang/British/American). Add culture context when relevant.';
   }
 
+  var glossInstructions=isBeginnerLvl
+    ? 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj"}] avec les verbes conjugues, mots irreguliers ou peu courants que ce niveau ne connait probablement pas encore. A1: beaucoup de mots glossaires. A2: mots moyennement courants.'
+    : 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj/expression"}] avec uniquement les mots rares, idiomatiques ou specifiques que ce niveau pourrait ne pas connaitre. B1/B2: quelques mots. C1: seulement les termes tres specifiques ou culturels.';
+  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+enSlangInstr;
+
+  var dist='';
+  if(lvl==='A1')dist='Genere '+CARDS_PER_DECK+' cartes vocab.';
+  else if(lvl==='A2')dist='Genere 4 vocab, 3 mcq, 3 translate.';
+  else if(lvl==='B1')dist='Genere 2 vocab, 3 mcq, 3 translate, 2 fill.';
+  else dist='Genere 2 mcq, 4 translate, 4 fill.';
+
   var vocabBeginner='vocab:{"type":"vocab","level":"'+lvl+'","front":"mot ou expression en '+tgt+'","translation":"traduction FR courte","is_verb":true/false,"example":"phrase exemple en '+tgt+' en contexte voyage","example_fr":"traduction francaise de cet exemple","word_translations":[{"es":"mot1","fr":"trad1"}],"conjugation":[{"pronoun":"'+prons[0]+'","form":"..."},{"pronoun":"'+prons[1]+'","form":"..."},{"pronoun":"'+prons[2]+'","form":"..."},{"pronoun":"'+prons[3]+'","form":"..."},{"pronoun":"'+prons[4]+'","form":"..."},{"pronoun":"'+prons[5]+'","form":"..."}],"glossary":[{"es":"mot","fr":"trad","type":"verbe"}]}';
   var vocabAdvanced='vocab:{"type":"vocab","level":"'+lvl+'","front":"mot en '+tgt+'","translation":"FR","is_verb":true/false,"example":"phrase exemple en '+tgt+'","example_fr":"traduction FR","conjugation":[{"pronoun":"'+prons[0]+'","form":"..."},{"pronoun":"'+prons[1]+'","form":"..."},{"pronoun":"'+prons[2]+'","form":"..."},{"pronoun":"'+prons[3]+'","form":"..."},{"pronoun":"'+prons[4]+'","form":"..."},{"pronoun":"'+prons[5]+'","form":"..."}],"glossary":[]}';
   var schema=(isBeginnerLvl?vocabBeginner:vocabAdvanced)+'\n';
@@ -1142,7 +1147,7 @@ function generateCards(){
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:3000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
   })
   .then(function(res){
     if(!res.ok){
@@ -1158,14 +1163,24 @@ function generateCards(){
     if(data.error)throw new Error(data.error.message);
     var raw=data.content.map(function(b){return b.text||'';}).join('');
     if(!raw)throw new Error('Réponse vide');
-    var jsonStr=raw.trim();
-    var matchBlock=jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if(matchBlock)jsonStr=matchBlock[1].trim();
-    var firstBrace=jsonStr.indexOf('{');
-    if(firstBrace>0)jsonStr=jsonStr.slice(firstBrace);
-    var parsed;
-    try{parsed=JSON.parse(jsonStr);}
-    catch(pe){throw new Error('Format invalide — réessaie');}
+    var parsed=tryParseJSON(raw);
+    if(!parsed){
+      // Auto-retry once silently
+      btn.textContent='Nouveau essai…';
+      return fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:3000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
+      }).then(function(r2){return r2.json();}).then(function(d2){
+        var raw2=d2.content.map(function(b){return b.text||'';}).join('');
+        var p2=tryParseJSON(raw2);
+        if(!p2)throw new Error('Format invalide — réessaie');
+        return p2;
+      });
+    }
+    return parsed;
+  })
+  .then(function(parsed){
     if(!parsed.cards||!parsed.cards.length)throw new Error('Aucune carte reçue');
     S.cards=shuffle(parsed.cards);
     S.currentIndex=0;S.mastered=0;S.unknown=0;S.streak=0;
@@ -1371,7 +1386,7 @@ function renderTranslate(c){
   var lvl=c.level||getLvl();
   var ea=document.getElementById('exerciseArea');
   if(!ea)return;
-  ea.innerHTML='<div class="exercise-wrap"><div class="exercise-box"><div class="ex-header"><span class="ex-type-badge">Traduction</span><span class="ex-level-tag level-'+lvl+'">'+lvl+'</span></div><div class="ex-prompt">Traduis en français</div><div class="ex-sentence" style="font-family:\'DM Serif Display\',serif;font-size:22px">'+c.sentence_es+'</div><div class="translation-input-wrap"><input type="text" class="translation-input" id="translateInput" placeholder="Ta traduction…" autocomplete="off" autocorrect="off"/><button class="check-btn" id="checkBtn" onclick="checkTranslate()">Vérifier →</button></div><div class="answer-feedback" id="feedback"></div></div></div>';
+  ea.innerHTML='<div class="exercise-wrap"><div class="exercise-box"><div class="ex-header"><span class="ex-type-badge">Traduction</span><span class="ex-level-tag level-'+lvl+'">'+lvl+'</span></div><div class="ex-prompt">Traduis en français</div><div class="ex-sentence" style="font-family:\'DM Serif Display\',serif;font-size:22px">'+c.sentence_es+'</div><div class="translation-input-wrap"><input type="text" class="translation-input" id="translateInput" placeholder="Ta traduction…" autocomplete="off" autocorrect="off"/><button class="check-btn" id="checkBtn" onclick="checkTranslate()">Vérifier →</button></div></div><div class="feedback-outside" id="feedback" style="display:none"></div></div>';
   var inp=document.getElementById('translateInput');
   if(inp){
     inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!_locked)checkTranslate();});
@@ -1806,13 +1821,8 @@ function launchExam(type){
     if(data.error)throw new Error(data.error.message);
     var raw=data.content.map(function(b){return b.text||'';}).join('');
     if(!raw)throw new Error('Réponse vide');
-    var jsonStr=raw.trim();
-    var matchBlock=jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if(matchBlock)jsonStr=matchBlock[1].trim();
-    var firstBrace=jsonStr.indexOf('{');
-    if(firstBrace>0)jsonStr=jsonStr.slice(firstBrace);
-    var parsed;
-    try{parsed=JSON.parse(jsonStr);}catch(pe){throw new Error('Format invalide — réessaie');}
+    var parsed=tryParseJSON(raw);
+    if(!parsed)throw new Error('Format invalide — réessaie');
     var cards=(parsed.cards||[]).filter(function(c){return c&&c.type&&c.type!=='vocab';});
     if(!cards.length)throw new Error('Aucune carte générée');
     S.cards=shuffle(cards);
