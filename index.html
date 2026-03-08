@@ -1412,37 +1412,23 @@ function showFeedback(ok,msg,sub,card){
   fb.style.display='block';
   var html='<div class="feedback-outside-title">'+(ok?'✓ Correct !':'✗ Incorrect')+'</div>';
   if(!ok&&card){
-    // Correct answer
     if(sub)html+='<div class="feedback-why"><strong>Bonne réponse :</strong> '+sub+'</div>';
-    // Why explanation
     if(card.why_wrong)html+='<div class="feedback-why">'+card.why_wrong+'</div>';
-    // Example with translation
     if(card.feedback_example){
       html+='<div class="feedback-example"><div class="feedback-example-es">'+card.feedback_example+'</div>';
       if(card.feedback_example_fr)html+='<div class="feedback-example-fr">'+card.feedback_example_fr+'</div>';
       html+='</div>';
     }
   }
+  // Inline continue button — no fixed positioning, always visible
+  var btnClass=ok?'continue-btn-main ok':'continue-btn-main ko';
+  var btnLabel=ok?'✓ Continuer →':'→ Continuer quand même';
+  html+='<button class="'+btnClass+'" style="margin-top:12px;width:100%" onclick="advanceFromExercise()">'+btnLabel+'</button>';
   fb.innerHTML=html;
 }
 
 function showContinueBar(ok){
-  // Inject continue button directly inside the feedback element — no fixed positioning issues
-  var fb=document.getElementById('feedback');
-  if(!fb)return;
-  var cls=ok?'ok':'ko';
-  var label=ok?'✓ Continuer →':'→ Continuer quand même';
-  // Remove existing continue btn if any
-  var existing=fb.querySelector('.continue-inline-btn');
-  if(existing)existing.remove();
-  var btn=document.createElement('button');
-  btn.className='continue-inline-btn '+cls;
-  btn.textContent=label;
-  btn.onclick=advanceFromExercise;
-  fb.appendChild(btn);
-  fb.style.display='block';
-  // Also keep the fixed bar hidden — no longer needed
-  hideContinueBar();
+  // Button is now rendered inline inside showFeedback — nothing to do
 }
 
 function hideContinueBar(){
