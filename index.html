@@ -17,7 +17,7 @@ html{height:100%}
 body{font-family:'Bricolage Grotesque',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(232,197,71,.05) 0%,transparent 70%);top:-150px;right:-150px;border-radius:50%;pointer-events:none;z-index:0}
 
-.app-shell{position:relative;z-index:1;max-width:720px;margin:0 auto;padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+.app-shell{position:relative;z-index:1;max-width:720px;margin:0 auto;padding-bottom:calc(180px + env(safe-area-inset-bottom,0px))}
 
 /* DAILY PROGRESS BAR */
 .daily-bar{position:sticky;top:0;z-index:50;background:rgba(12,12,15,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
@@ -206,14 +206,14 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .check-btn:active{transform:scale(.97);opacity:.85}
 .check-btn:disabled{opacity:.4}
 
-/* CONTINUE BUTTON — sticky at bottom of screen */
-.continue-bar{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));left:0;right:0;padding:10px 16px;z-index:40;display:none;max-width:720px;left:50%;transform:translateX(-50%);width:100%}
-.continue-bar.show{display:block;left:50%;transform:translateX(-50%)}
-.continue-bar-inner{max-width:720px;margin:0 auto;padding:0 4px}
-.continue-btn-main{width:100%;padding:16px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:opacity .15s,transform .15s}
+/* CONTINUE BUTTON — sticky above bottom nav */
+.continue-bar{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:100%;max-width:720px;padding:0 16px;z-index:49;pointer-events:none;opacity:0;transition:opacity .25s}
+.continue-bar.show{pointer-events:auto;opacity:1}
+.continue-bar-inner{padding:0}
+.continue-btn-main{width:100%;padding:17px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:opacity .15s,transform .15s;box-shadow:0 6px 24px rgba(0,0,0,.5)}
 .continue-btn-main:active{transform:scale(.98);opacity:.85}
 .continue-btn-main.ok{background:var(--success);color:#0c0c0f}
-.continue-btn-main.ko{background:rgba(30,20,20,.95);color:var(--danger);border:1px solid rgba(232,93,93,.4)}
+.continue-btn-main.ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.5)}
 
 /* EMPTY / LOADING */
 .empty-state{width:100%;min-height:240px;background:var(--card-bg);border:1px dashed rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);padding:24px 28px;text-align:center;box-sizing:border-box}
@@ -1420,8 +1420,6 @@ function showContinueBar(ok){
   btn.className='continue-btn-main '+(ok?'ok':'ko');
   btn.textContent=ok?'✓ Continuer →':'→ Continuer quand même';
   bar.classList.add('show');
-  // Scroll to show the button on small screens
-  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 }
 
 function hideContinueBar(){
