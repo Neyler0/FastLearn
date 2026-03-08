@@ -214,6 +214,10 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .continue-btn-main:active{transform:scale(.98);opacity:.85}
 .continue-btn-main.ok{background:var(--success);color:#0c0c0f}
 .continue-btn-main.ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.5)}
+/* Inline continue button inside feedback */
+.continue-inline-btn{display:block;width:100%;margin-top:14px;padding:15px;border-radius:12px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none}
+.continue-inline-btn.ok{background:var(--success);color:#0c0c0f}
+.continue-inline-btn.ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.5)}
 
 /* EMPTY / LOADING */
 .empty-state{width:100%;min-height:240px;background:var(--card-bg);border:1px dashed rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);padding:24px 28px;text-align:center;box-sizing:border-box}
@@ -1423,12 +1427,22 @@ function showFeedback(ok,msg,sub,card){
 }
 
 function showContinueBar(ok){
-  var bar=document.getElementById('continueBar');
-  var btn=document.getElementById('continueBtnMain');
-  if(!bar||!btn)return;
-  btn.className='continue-btn-main '+(ok?'ok':'ko');
-  btn.textContent=ok?'✓ Continuer →':'→ Continuer quand même';
-  bar.classList.add('show');
+  // Inject continue button directly inside the feedback element — no fixed positioning issues
+  var fb=document.getElementById('feedback');
+  if(!fb)return;
+  var cls=ok?'ok':'ko';
+  var label=ok?'✓ Continuer →':'→ Continuer quand même';
+  // Remove existing continue btn if any
+  var existing=fb.querySelector('.continue-inline-btn');
+  if(existing)existing.remove();
+  var btn=document.createElement('button');
+  btn.className='continue-inline-btn '+cls;
+  btn.textContent=label;
+  btn.onclick=advanceFromExercise;
+  fb.appendChild(btn);
+  fb.style.display='block';
+  // Also keep the fixed bar hidden — no longer needed
+  hideContinueBar();
 }
 
 function hideContinueBar(){
