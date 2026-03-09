@@ -179,8 +179,16 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .feedback-example-fr{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);margin-top:2px}
 .feedback-outside{background:rgba(232,93,93,.06);border:1px solid rgba(232,93,93,.2);border-radius:14px;padding:14px 16px;margin-top:10px;margin-bottom:10px}
 .feedback-outside.ok-outside{background:rgba(78,202,139,.06);border-color:rgba(78,202,139,.2)}
-.feedback-outside-title{font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px}
+.feedback-outside-title{font-size:14px;font-weight:800;color:var(--danger);margin-bottom:8px}
 .feedback-outside.ok-outside .feedback-outside-title{color:var(--success)}
+.fb-answer{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;padding:8px 10px;background:rgba(78,202,139,.08);border-radius:8px;border-left:3px solid var(--success)}
+.fb-tip{font-size:12px;color:rgba(240,237,232,.8);margin-top:6px;line-height:1.55;padding:7px 10px;background:rgba(232,197,71,.06);border-radius:8px;border-left:3px solid rgba(232,197,71,.4)}
+.fb-example{margin-top:8px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:8px;border-left:2px solid rgba(107,106,114,.3)}
+.fb-ex-target{font-size:13px;font-weight:600;color:var(--text);font-style:italic}
+.fb-ex-fr{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);margin-top:3px}
+/* Legacy aliases */
+.feedback-pedagogy-answer{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;padding:8px 10px;background:rgba(78,202,139,.08);border-radius:8px;border-left:3px solid var(--success)}
+.feedback-pedagogy-why{font-size:12px;color:rgba(240,237,232,.8);margin-top:6px;line-height:1.55;padding:7px 10px;background:rgba(232,197,71,.05);border-radius:8px;border-left:3px solid rgba(232,197,71,.4)}
 .conj-table{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
 .conj-row{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;padding:4px 9px;font-size:11px;font-family:var(--mono,monospace)}
 .conj-pronoun{color:var(--muted)}
@@ -674,7 +682,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.4.1 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.5.0 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1152,7 +1160,7 @@ function generateCards(){
   .then(function(res){
     if(!res.ok){
       var msg='Erreur '+res.status;
-      if(res.status===401)msg='Clé API invalide';
+      if(res.status===401)msg='🔑 Clé API invalide — va dans Profil pour la corriger';
       else if(res.status===429)msg='Quota dépassé — recharge ton compte';
       else if(res.status===529||res.status===503||res.status===502)msg='API surchargée — réessaie dans quelques secondes';
       return res.json().then(function(ed){throw new Error(ed.error&&ed.error.message?ed.error.message:msg);}).catch(function(){throw new Error(msg);});
@@ -1262,7 +1270,7 @@ function renderVocab(c){
   var glossData={es:c.front,fr:c.translation,type:c.is_verb?'verbe':'nom',level:c.level||getLvl()};
 
 
-  ea.innerHTML='<div class="card-scene" id="cardScene" onclick="flipCard()"><div class="card-inner" id="cardInner"><div class="card-face card-front" id="cardFront"><span class="card-type-badge">Vocabulaire</span><span class="card-level-tag level-'+lvl+'">'+lvl+'</span><div class="card-word">'+c.front+'</div>'+beginnerHint+'<div class="card-hint">↺ Toucher pour révéler</div><span class="card-tap-hint">TAP TO FLIP</span></div><div class="card-face card-back"><span class="card-back-label">Traduction</span><div class="card-translation">'+c.translation+'</div>'+exHtml+conjHtml+'<div style="display:flex;justify-content:center;padding:14px 0 10px" onclick="event.stopPropagation()"><button id="vocabSaveBtn" class="gls-save-btn'+(alreadySaved?' saved':'')+'" style="font-size:11px;padding:8px 16px;letter-spacing:1.5px" onclick="saveGlossVocabCard(this)">'+( alreadySaved?'✓ Dans le glossaire':'+ Ajouter au glossaire')+'</button></div><span class="card-tap-hint">TAP TO FLIP</span></div></div></div><div class="action-row"><button class="action-btn btn-unknown" onclick="markVocab(false)">✗ À revoir</button><button class="action-btn btn-skip" onclick="skipCard()">→</button><button class="action-btn btn-known" onclick="markVocab(true)">✓ Maîtrisé</button></div>';
+  ea.innerHTML='<div class="card-scene" id="cardScene" onclick="flipCard()"><div class="card-inner" id="cardInner"><div class="card-face card-front" id="cardFront"><span class="card-type-badge">Vocabulaire</span><span class="card-level-tag level-'+lvl+'">'+lvl+'</span><div class="card-word">'+c.front+'</div>'+beginnerHint+'<div class="card-hint">↺ Toucher pour révéler</div><span class="card-tap-hint">TAP TO FLIP</span></div><div class="card-face card-back"><span class="card-back-label">Traduction</span><div class="card-translation">'+c.translation+'</div>'+exHtml+conjHtml+'<div style="display:flex;justify-content:center;padding:14px 0 10px" onclick="event.stopPropagation()"><button id="vocabSaveBtn" class="gls-save-btn'+(alreadySaved?' saved':'')+'" style="font-size:11px;padding:8px 16px;letter-spacing:1.5px" onclick="saveGlossVocabCard(this)">'+( alreadySaved?'✓ Dans le glossaire':'+ Ajouter au glossaire')+'</button></div><span class="card-tap-hint">TAP TO FLIP</span></div></div></div><div class="action-row"><button class="action-btn btn-unknown" onclick="markVocab(\'review\')">✗ À revoir</button><button class="action-btn btn-skip" onclick="skipCard()">→</button><button class="action-btn btn-known" onclick="markVocab(\'mastered\')">✓ Maîtrisé</button></div>';
 }
 
 function flipCard(){
@@ -1272,8 +1280,13 @@ function flipCard(){
 }
 
 function markVocab(result){
-  // result: 'mastered' | 'hard' | 'review'
   if(_locked)return;
+  // Must flip card first before judging
+  if(!S.isFlipped){
+    flipCard();
+    showToast('👀 Lis la réponse puis juge !','info');
+    return;
+  }
   _locked=true;
   S.totalAnsweredAllTime++;
   var card=S.cards[S.currentIndex];
@@ -1288,12 +1301,11 @@ function markVocab(result){
     if(scene){scene.classList.add('correct');setTimeout(function(){scene.classList.remove('correct');_doAdvance();},380);}
     else{_doAdvance();}
   }else if(result==='hard'){
-    S.unknown++;S.totalAnsweredAllTime--;
-    addXP(4);
+    S.streak=0;
+    addXP(2);
     if(S.isExamMode){S.examTotal++;}
     if(card)card._mastery='hard';
     if(card&&card.front)srsRegisterVocab(card.front,card.translation,'hard');
-    // Re-insert card near end of deck (seen again soon)
     if(!S.isReviewMode&&!S.isExamMode&&card){
       var reinsertAt=Math.min(S.currentIndex+3,S.cards.length);
       S.cards.splice(reinsertAt,0,Object.assign({},card));
@@ -1302,9 +1314,9 @@ function markVocab(result){
     if(scene3){scene3.classList.add('incorrect');setTimeout(function(){scene3.classList.remove('incorrect');_doAdvance();},380);}
     else{_doAdvance();}
   }else{
-    // review
-    S.unknown++;S.streak=0;addXP(-XP_WRONG_PENALTY);
-    if(!S.isReviewMode&&!S.isExamMode)S.reviewQueue.push(card);
+    // À revoir — neutral, no XP penalty
+    S.unknown++;S.streak=0;
+    if(!S.isReviewMode&&!S.isExamMode&&card)S.reviewQueue.push(card);
     if(S.isExamMode)S.examTotal++;
     if(card)card._mastery='review';
     if(card&&card.front)srsRegisterVocab(card.front,card.translation,'review');
@@ -1320,7 +1332,12 @@ function renderMCQ(c){
   var lvl=c.level||getLvl();
   var rawSentence=c.sentence.split(c.correct).join('<span class="blank">___</span>');
   var sentenceDisplay=c.glossary?buildGlossary(rawSentence,c.glossary):rawSentence;
-  var options=shuffle([c.correct].concat((c.distractors||[]).slice(0,3)));
+  // Deduplicate distractors — exclude any that equal the correct answer
+  var seen={};seen[norm(c.correct)]=true;
+  var uniqueDistractors=(c.distractors||[]).filter(function(d){
+    var n=norm(d);if(seen[n])return false;seen[n]=true;return true;
+  });
+  var options=shuffle([c.correct].concat(uniqueDistractors.slice(0,3)));
   var choicesHtml=options.map(function(o){return '<button class="choice-btn" onclick="selectMCQ(this,\''+escQ(o)+'\',\''+escQ(c.correct)+'\')">'+o+'</button>';}).join('');
   var ea=document.getElementById('exerciseArea');
   if(!ea)return;
@@ -1333,24 +1350,31 @@ function selectMCQ(btn,chosen,correct){
   var correct_dec=unescQ(correct);
   var chosen_dec=unescQ(chosen);
   var ok=norm(chosen_dec)===norm(correct_dec);
+  var card=S.cards[S.currentIndex];
   document.querySelectorAll('.choice-btn').forEach(function(b){b.disabled=true;});
   if(ok){
     btn.classList.add('correct');
-    onCorrect(ok);
-    showFeedback(true,'','',null);
+    onCorrect(true);
+    showFeedback(true,'',correct_dec,card);
   }else{
     btn.classList.add('wrong');
-    document.querySelectorAll('.choice-btn').forEach(function(b){if(norm(b.textContent)===norm(correct_dec))b.classList.add('reveal-correct');});
+    document.querySelectorAll('.choice-btn').forEach(function(b){
+      if(norm(b.textContent)===norm(correct_dec))b.classList.add('reveal-correct');
+    });
     onWrong(correct_dec);
-    showFeedback(false,'',correct_dec,S.cards[S.currentIndex]);
+    showFeedback(false,'',correct_dec,card);
   }
-  showContinueBar(ok);
 }
 
 // ---- FILL ----
 function renderFill(c){
   var lvl=c.level||getLvl();
-  var options=shuffle([c.correct].concat((c.distractors||[]).slice(0,3)));
+  // Deduplicate distractors
+  var seen2={};seen2[norm(c.correct)]=true;
+  var uniqueDist2=(c.distractors||[]).filter(function(d){
+    var n=norm(d);if(seen2[n])return false;seen2[n]=true;return true;
+  });
+  var options=shuffle([c.correct].concat(uniqueDist2.slice(0,3)));
   var choicesHtml=options.map(function(o){return '<button class="choice-btn" onclick="selectFill(this,\''+escQ(o)+'\',\''+escQ(c.correct)+'\')">'+o+'</button>';}).join('');
   var ea=document.getElementById('exerciseArea');
   if(!ea)return;
@@ -1365,20 +1389,22 @@ function selectFill(btn,chosen,correct){
   var correct_dec=unescQ(correct);
   var chosen_dec=unescQ(chosen);
   var ok=norm(chosen_dec)===norm(correct_dec);
+  var card=S.cards[S.currentIndex];
   document.querySelectorAll('.choice-btn').forEach(function(b){b.disabled=true;});
   var blankEl=document.getElementById('fillBlank');
   if(blankEl){blankEl.textContent=chosen_dec;blankEl.style.color=ok?'var(--success)':'var(--danger)';}
   if(ok){
     btn.classList.add('correct');
     onCorrect(true);
-    showFeedback(true,'','',null);
+    showFeedback(true,'',correct_dec,card);
   }else{
     btn.classList.add('wrong');
-    document.querySelectorAll('.choice-btn').forEach(function(b){if(norm(b.textContent)===norm(correct_dec))b.classList.add('reveal-correct');});
+    document.querySelectorAll('.choice-btn').forEach(function(b){
+      if(norm(b.textContent)===norm(correct_dec))b.classList.add('reveal-correct');
+    });
     onWrong(correct_dec);
-    showFeedback(false,'',correct_dec,S.cards[S.currentIndex]);
+    showFeedback(false,'',correct_dec,card);
   }
-  showContinueBar(ok);
 }
 
 // ---- TRANSLATE ----
@@ -1425,20 +1451,38 @@ function showFeedback(ok,msg,sub,card){
   if(!fb)return;
   fb.className='feedback-outside '+(ok?'ok-outside':'');
   fb.style.display='block';
-  var html='<div class="feedback-outside-title">'+(ok?'✓ Correct !':'✗ Incorrect')+'</div>';
-  if(!ok&&card){
-    if(sub)html+='<div class="feedback-why"><strong>Bonne réponse :</strong> '+sub+'</div>';
-    if(card.why_wrong)html+='<div class="feedback-why">'+card.why_wrong+'</div>';
-    if(card.feedback_example){
-      html+='<div class="feedback-example"><div class="feedback-example-es">'+card.feedback_example+'</div>';
-      if(card.feedback_example_fr)html+='<div class="feedback-example-fr">'+card.feedback_example_fr+'</div>';
+
+  var html='';
+  if(ok){
+    html+='<div class="feedback-outside-title">✓ Correct !</div>';
+    if(card&&card.why_wrong){
+      // Show grammar tip even on correct for reinforcement
+      html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
+    }
+    if(card&&card.feedback_example){
+      html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
+      if(card.feedback_example_fr)html+='<div class="fb-ex-fr">'+card.feedback_example_fr+'</div>';
       html+='</div>';
     }
+  }else{
+    html+='<div class="feedback-outside-title">✗ Incorrect</div>';
+    // 1. Correct answer — always
+    if(sub)html+='<div class="fb-answer">✓ Bonne réponse : <strong>'+sub+'</strong></div>';
+    // 2. Grammar / pedagogy explanation — always if available
+    if(card&&card.why_wrong)html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
+    // 3. Example in context
+    if(card&&card.feedback_example){
+      html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
+      if(card.feedback_example_fr)html+='<div class="fb-ex-fr">'+card.feedback_example_fr+'</div>';
+      html+='</div>';
+    }
+    // 4. Fallback if no card detail
+    if(!card&&sub)html+='<div class="fb-tip" style="color:var(--muted)">Retiens cette forme et réessaie !</div>';
   }
-  // Inline continue button — no fixed positioning, always visible
+
   var btnClass=ok?'continue-btn-main ok':'continue-btn-main ko';
   var btnLabel=ok?'✓ Continuer →':'→ Continuer quand même';
-  html+='<button class="'+btnClass+'" style="margin-top:12px;width:100%" onclick="advanceFromExercise()">'+btnLabel+'</button>';
+  html+='<button class="'+btnClass+'" style="margin-top:14px;width:100%;display:block" onclick="advanceFromExercise()">'+btnLabel+'</button>';
   fb.innerHTML=html;
 }
 
@@ -1467,11 +1511,9 @@ function onCorrect(isExercise){
 function onWrong(correctAnswer){
   var card=S.cards[S.currentIndex];
   S.unknown++;S.totalAnsweredAllTime++;S.streak=0;
-  addXP(-XP_WRONG_PENALTY); // penalty for errors
+  addXP(-XP_WRONG_PENALTY);
   if(!S.isReviewMode&&!S.isExamMode&&card)S.reviewQueue.push(card);
   if(S.isExamMode)S.examTotal++;
-  var fb=document.getElementById('feedback');
-  if(fb&&!fb.classList.contains('show'))showFeedback(false,'✗ Incorrect','Réponse : '+correctAnswer);
   updateStats();updateProgress();saveProgress();
 }
 
@@ -1695,7 +1737,8 @@ function showCompletion(){
   }
   document.getElementById('completionSub').textContent=subMsg;
   document.getElementById('finalMastered').textContent=S.mastered;
-  document.getElementById('finalXp').textContent=(S.sessionXp>=0?'+':'')+S.sessionXp;
+  var displayXp=Math.max(0,S.sessionXp);
+  document.getElementById('finalXp').textContent=(displayXp>0?'+':'')+displayXp;
   document.getElementById('finalStreak').textContent=S.bestStreak;
 
   // — Render dynamic action buttons —
@@ -2690,17 +2733,71 @@ document.addEventListener('click',function(e){
 // ============================================================
 // INIT
 // ============================================================
+var _apiValidated=false;
+
+function validateApiKey(key){
+  var statusEl=document.getElementById('apiStatus');
+  if(!key||key.length<20){
+    statusEl.textContent=key.length>0?'⚠️':'🔒';
+    _apiValidated=false;
+    return;
+  }
+  statusEl.textContent='⏳';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})
+  })
+  .then(function(res){
+    if(res.status===401){
+      statusEl.textContent='❌';
+      _apiValidated=false;
+      localStorage.removeItem('fl_api_key');
+      showToast('❌ Clé API invalide — vérifie dans console.anthropic.com','error');
+    }else if(res.ok||res.status===400){
+      // 400 = bad request but auth passed
+      statusEl.textContent='✅';
+      _apiValidated=true;
+      localStorage.setItem('fl_api_key',key);
+    }else{
+      statusEl.textContent='⚠️';
+    }
+  })
+  .catch(function(){statusEl.textContent='⚠️';});
+}
+
 function init(){
   loadProgress();
   renderEmptyState();updateStats();updateProgress();
+
   var apiInput=document.getElementById('apiKeyInput');
-  function checkApiKey(){
-    var v=apiInput.value.trim();
-    document.getElementById('apiStatus').textContent=v.length>10?'✅':v.length>0?'⚠️':'🔒';
+
+  // Restore saved key
+  var savedKey=localStorage.getItem('fl_api_key');
+  if(savedKey){
+    apiInput.value=savedKey;
+    document.getElementById('apiStatus').textContent='✅';
+    _apiValidated=true;
   }
-  apiInput.addEventListener('input',checkApiKey);
-  apiInput.addEventListener('change',checkApiKey);
-  apiInput.addEventListener('paste',function(){setTimeout(checkApiKey,60);});
+
+  // Live feedback on typing
+  apiInput.addEventListener('input',function(){
+    var v=apiInput.value.trim();
+    document.getElementById('apiStatus').textContent=v.length>20?'⏳':v.length>0?'⚠️':'🔒';
+    _apiValidated=false;
+  });
+
+  // Validate on blur
+  apiInput.addEventListener('blur',function(){
+    var v=apiInput.value.trim();
+    if(v.length>10)validateApiKey(v);
+  });
+
+  // Validate on paste
+  apiInput.addEventListener('paste',function(){
+    setTimeout(function(){validateApiKey(apiInput.value.trim());},150);
+  });
+
   document.getElementById('topicInput').addEventListener('keydown',function(e){if(e.key==='Enter')generateCards();});
 }
 init();
