@@ -206,7 +206,8 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .check-btn:disabled{opacity:.4}
 
 /* CONTINUE BUTTON — sticky above bottom nav */
-.continue-bar{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:100%;max-width:720px;padding:0 16px;z-index:49;pointer-events:none;opacity:0;transition:opacity .25s}
+.continue-bar{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:100%;max-width:720px;padding:10px 16px;z-index:49;pointer-events:none;opacity:0;transition:opacity .2s}
+.continue-bar-inner{width:100%}
 .continue-bar.show{pointer-events:auto;opacity:1}
 .continue-bar-inner{padding:0}
 .continue-btn-main{width:100%;padding:17px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:opacity .15s,transform .15s;box-shadow:0 6px 24px rgba(0,0,0,.5)}
@@ -1281,12 +1282,6 @@ function flipCard(){
 
 function markVocab(result){
   if(_locked)return;
-  // Must flip card first before judging
-  if(!S.isFlipped){
-    flipCard();
-    showToast('👀 Lis la réponse puis juge !','info');
-    return;
-  }
   _locked=true;
   S.totalAnsweredAllTime++;
   var card=S.cards[S.currentIndex];
@@ -1455,10 +1450,8 @@ function showFeedback(ok,msg,sub,card){
   var html='';
   if(ok){
     html+='<div class="feedback-outside-title">✓ Correct !</div>';
-    if(card&&card.why_wrong){
-      // Show grammar tip even on correct for reinforcement
-      html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
-    }
+    if(sub)html+='<div class="fb-answer" style="border-left-color:var(--success)">✓ '+sub+'</div>';
+    if(card&&card.why_wrong)html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
     if(card&&card.feedback_example){
       html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
       if(card.feedback_example_fr)html+='<div class="fb-ex-fr">'+card.feedback_example_fr+'</div>';
@@ -1466,33 +1459,30 @@ function showFeedback(ok,msg,sub,card){
     }
   }else{
     html+='<div class="feedback-outside-title">✗ Incorrect</div>';
-    // 1. Correct answer — always
     if(sub)html+='<div class="fb-answer">✓ Bonne réponse : <strong>'+sub+'</strong></div>';
-    // 2. Grammar / pedagogy explanation — always if available
     if(card&&card.why_wrong)html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
-    // 3. Example in context
     if(card&&card.feedback_example){
       html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
       if(card.feedback_example_fr)html+='<div class="fb-ex-fr">'+card.feedback_example_fr+'</div>';
       html+='</div>';
     }
-    // 4. Fallback if no card detail
     if(!card&&sub)html+='<div class="fb-tip" style="color:var(--muted)">Retiens cette forme et réessaie !</div>';
   }
 
-  var btnClass=ok?'continue-btn-main ok':'continue-btn-main ko';
+  var btnClass='continue-btn-main '+(ok?'ok':'ko');
   var btnLabel=ok?'✓ Continuer →':'→ Continuer quand même';
   html+='<button class="'+btnClass+'" style="margin-top:14px;width:100%;display:block" onclick="advanceFromExercise()">'+btnLabel+'</button>';
   fb.innerHTML=html;
+  setTimeout(function(){fb.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
 }
 
 function showContinueBar(ok){
-  // Button is now rendered inline inside showFeedback — nothing to do
+  // handled inside showFeedback via sticky bar
 }
 
 function hideContinueBar(){
   var bar=document.getElementById('continueBar');
-  if(bar)bar.classList.remove('show');
+  if(bar){bar.style.opacity='0';bar.style.pointerEvents='none';}
 }
 
 function advanceFromExercise(){
