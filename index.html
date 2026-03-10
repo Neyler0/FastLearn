@@ -1473,7 +1473,20 @@ function showFeedback(ok,msg,sub,card){
   var btnLabel=ok?'✓ Continuer →':'→ Continuer quand même';
   html+='<button class="'+btnClass+'" style="margin-top:14px;width:100%;display:block" onclick="advanceFromExercise()">'+btnLabel+'</button>';
   fb.innerHTML=html;
-  setTimeout(function(){fb.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
+
+  // Also activate sticky bar as guaranteed fallback
+  var bar=document.getElementById('continueBar');
+  var barBtn=document.getElementById('continueBtnMain');
+  if(bar&&barBtn){
+    barBtn.className='continue-btn-main '+(ok?'ok':'ko');
+    barBtn.textContent=btnLabel;
+    bar.style.opacity='1';
+    bar.style.pointerEvents='all';
+  }
+
+  setTimeout(function(){
+    fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },80);
 }
 
 function showContinueBar(ok){
