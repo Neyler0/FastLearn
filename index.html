@@ -206,18 +206,22 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .check-btn:disabled{opacity:.4}
 
 /* CONTINUE BUTTON — sticky above bottom nav */
-.continue-bar{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:100%;max-width:720px;padding:10px 16px;z-index:49;pointer-events:none;opacity:0;transition:opacity .2s}
-.continue-bar-inner{width:100%}
+.continue-bar{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:688px;z-index:200;pointer-events:none;opacity:0;transition:opacity .18s ease}
 .continue-bar.show{pointer-events:auto;opacity:1}
-.continue-bar-inner{padding:0}
-.continue-btn-main{width:100%;padding:17px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:opacity .15s,transform .15s;box-shadow:0 6px 24px rgba(0,0,0,.5)}
-.continue-btn-main:active{transform:scale(.98);opacity:.85}
+.continue-btn-main{width:100%;padding:18px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:opacity .15s,transform .15s;box-shadow:0 8px 32px rgba(0,0,0,.6);display:block}
+.continue-btn-main:active{transform:scale(.97);opacity:.85}
 .continue-btn-main.ok{background:var(--success);color:#0c0c0f}
 .continue-btn-main.ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.5)}
-/* Inline continue button inside feedback */
-.continue-inline-btn{display:block;width:100%;margin-top:14px;padding:15px;border-radius:12px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none}
-.continue-inline-btn.ok{background:var(--success);color:#0c0c0f}
-.continue-inline-btn.ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.5)}
+/* Inline feedback continue button — no fixed positioning, lives in normal flow */
+.fb-continue-btn{display:block;width:100%;margin-top:16px;padding:18px;border-radius:14px;border:none;font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;transition:transform .15s,opacity .15s;letter-spacing:.3px}
+.fb-continue-btn:active{transform:scale(.97);opacity:.85}
+.fb-continue-ok{background:var(--success);color:#0c0c0f}
+.fb-continue-ko{background:#1a0a0a;color:var(--danger);border:2px solid rgba(232,93,93,.4)}
+.ok-title{color:var(--success)!important}
+.ko-title{color:var(--danger)!important}
+.fb-answer-ok{border-left-color:var(--success)!important}
+.fb-answer-ko{border-left-color:var(--success)!important}
+.ko-muted{color:var(--muted)}
 
 /* EMPTY / LOADING */
 .empty-state{width:100%;min-height:240px;background:var(--card-bg);border:1px dashed rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);padding:24px 28px;text-align:center;box-sizing:border-box}
@@ -683,7 +687,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.5.1 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.5.2 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -770,12 +774,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 
 </div>
 
-<!-- Sticky continue bar (for MCQ/Fill/Translate) -->
-<div class="continue-bar" id="continueBar">
-  <div class="continue-bar-inner">
-    <button class="continue-btn-main ok" id="continueBtnMain" onclick="advanceFromExercise()">Continuer →</button>
-  </div>
-</div>
+<!-- continueBar removed — button is inline in feedback -->
 
 <nav class="bottom-nav">
   <button class="bottom-tab active" id="btab-learn" onclick="switchView('learn')">
@@ -1433,9 +1432,8 @@ function checkTranslate(){
   var matches=userWords.filter(function(w){return refWords.indexOf(w)>-1;}).length;
   var fuzzyOk=refWords.length>0&&matches/refWords.length>=0.8;
   var ok=isExact||fuzzyOk;
-  if(ok){input.classList.add('correct-input');onCorrect(true);showFeedback(true,'','',null);}
+  if(ok){input.classList.add('correct-input');onCorrect(true);showFeedback(true,'',card.translation_fr,card);}
   else{input.classList.add('wrong-input');onWrong(card.translation_fr);showFeedback(false,'',card.translation_fr,card);}
-  showContinueBar(ok);
 }
 
 // ============================================================
@@ -1446,11 +1444,10 @@ function showFeedback(ok,msg,sub,card){
   if(!fb)return;
   fb.className='feedback-outside '+(ok?'ok-outside':'');
   fb.style.display='block';
-
   var html='';
   if(ok){
-    html+='<div class="feedback-outside-title">✓ Correct !</div>';
-    if(sub)html+='<div class="fb-answer" style="border-left-color:var(--success)">✓ '+sub+'</div>';
+    html+='<div class="feedback-outside-title ok-title">✓ Correct !</div>';
+    if(sub)html+='<div class="fb-answer fb-answer-ok">✓ '+sub+'</div>';
     if(card&&card.why_wrong)html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
     if(card&&card.feedback_example){
       html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
@@ -1458,48 +1455,32 @@ function showFeedback(ok,msg,sub,card){
       html+='</div>';
     }
   }else{
-    html+='<div class="feedback-outside-title">✗ Incorrect</div>';
-    if(sub)html+='<div class="fb-answer">✓ Bonne réponse : <strong>'+sub+'</strong></div>';
+    html+='<div class="feedback-outside-title ko-title">✗ Incorrect</div>';
+    if(sub)html+='<div class="fb-answer fb-answer-ko">✓ Bonne réponse : <strong>'+sub+'</strong></div>';
     if(card&&card.why_wrong)html+='<div class="fb-tip">💡 '+card.why_wrong+'</div>';
     if(card&&card.feedback_example){
       html+='<div class="fb-example"><div class="fb-ex-target">'+card.feedback_example+'</div>';
       if(card.feedback_example_fr)html+='<div class="fb-ex-fr">'+card.feedback_example_fr+'</div>';
       html+='</div>';
     }
-    if(!card&&sub)html+='<div class="fb-tip" style="color:var(--muted)">Retiens cette forme et réessaie !</div>';
+    if(!card&&sub)html+='<div class="fb-tip ko-muted">Retiens cette forme !</div>';
   }
-
-  var btnClass='continue-btn-main '+(ok?'ok':'ko');
-  var btnLabel=ok?'✓ Continuer →':'→ Continuer quand même';
-  html+='<button class="'+btnClass+'" style="margin-top:14px;width:100%;display:block" onclick="advanceFromExercise()">'+btnLabel+'</button>';
+  /* ---- INLINE CONTINUE BUTTON — no position:fixed, no z-index, always in DOM flow ---- */
+  var bCls=ok?'fb-continue-btn fb-continue-ok':'fb-continue-btn fb-continue-ko';
+  var bTxt=ok?'✓ Continuer →':'→ Continuer quand même';
+  html+='<button class="'+bCls+'" onclick="advanceFromExercise()">'+bTxt+'</button>';
   fb.innerHTML=html;
-
-  // Also activate sticky bar as guaranteed fallback
-  var bar=document.getElementById('continueBar');
-  var barBtn=document.getElementById('continueBtnMain');
-  if(bar&&barBtn){
-    barBtn.className='continue-btn-main '+(ok?'ok':'ko');
-    barBtn.textContent=btnLabel;
-    bar.style.opacity='1';
-    bar.style.pointerEvents='all';
-  }
-
-  setTimeout(function(){
+  /* Scroll so button is always visible on small screens */
+  requestAnimationFrame(function(){
     fb.scrollIntoView({behavior:'smooth',block:'nearest'});
-  },80);
+  });
 }
 
-function showContinueBar(ok){
-  // handled inside showFeedback via sticky bar
-}
-
-function hideContinueBar(){
-  var bar=document.getElementById('continueBar');
-  if(bar){bar.style.opacity='0';bar.style.pointerEvents='none';}
-}
+function showContinueBar(ok){ /* no-op — button is inline */ }
+function hideContinueBar(){ /* no-op */ }
 
 function advanceFromExercise(){
-  hideContinueBar();
+  _locked=false;
   _doAdvance();
 }
 
