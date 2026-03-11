@@ -738,7 +738,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.7.0 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.7.1 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1481,7 +1481,7 @@ function checkTranslate(){
   var userAnswer=input.value.trim();
   if(!userAnswer){showToast('✏️ Écris ta traduction','info');return;}
   _locked=true;
-  // Dismiss iOS keyboard before showing feedback (so button is visible)
+  // Dismiss iOS keyboard FIRST — must happen before sheet opens
   input.blur();
   var checkBtn=document.getElementById('checkBtn');
   if(checkBtn)checkBtn.disabled=true;
@@ -1493,8 +1493,12 @@ function checkTranslate(){
   var matches=userWords.filter(function(w){return refWords.indexOf(w)>-1;}).length;
   var fuzzyOk=refWords.length>0&&matches/refWords.length>=0.8;
   var ok=isExact||fuzzyOk;
-  if(ok){input.classList.add('correct-input');onCorrect(true);showFeedback(true,'',card.translation_fr,card);}
-  else{input.classList.add('wrong-input');onWrong(card.translation_fr);showFeedback(false,'',card.translation_fr,card);}
+  if(ok){input.classList.add('correct-input');onCorrect(true);}
+  else{input.classList.add('wrong-input');onWrong(card.translation_fr);}
+  // Wait for iOS keyboard to fully retract (300ms) before opening bottom sheet
+  setTimeout(function(){
+    showFeedback(ok,'',card.translation_fr,card);
+  }, 320);
 }
 
 // ============================================================
@@ -1538,10 +1542,12 @@ function showFeedback(ok, msg, sub, card){
   btn.className = 'fbs-continue ' + (ok ? 'ok' : 'ko');
   btn.textContent = ok ? '✓ Continuer →' : '→ Continuer quand même';
 
-  // Open sheet — RAF ensures paint before class add (iOS needs this)
+  // Open sheet — double RAF pattern required on iOS Chrome to guarantee paint before transition
   requestAnimationFrame(function(){
-    backdrop.classList.add('open');
-    sheet.classList.add('open');
+    requestAnimationFrame(function(){
+      backdrop.classList.add('open');
+      sheet.classList.add('open');
+    });
   });
 }
 
