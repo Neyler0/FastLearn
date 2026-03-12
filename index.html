@@ -687,7 +687,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.0 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.1 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1332,13 +1332,32 @@ function exWrap(innerHtml){
   return '<div class="exercise-wrap">'
     + '<div class="exercise-box">' + innerHtml + '</div>'
     + '<div class="ex-fb-zone" id="exFbZone"></div>'
-    + '<button class="ex-main-btn verify" id="exMainBtn" onclick="doVerify()">Vérifier →</button>'
+    + '<button class="ex-main-btn verify" id="exMainBtn">Vérifier →</button>'
     + '</div>';
+}
+
+// Call this after every ea.innerHTML = exWrap(...) to attach the button
+function attachMainBtn(){
+  var btn = document.getElementById('exMainBtn');
+  if(!btn) return;
+  // Both touchend AND click — covers all iOS WKWebView versions
+  btn.addEventListener('touchend', function(e){
+    e.preventDefault();
+    doVerify();
+  });
+  btn.addEventListener('click', function(e){
+    doVerify();
+  });
 }
 
 // ── Global doVerify — dispatches to current exercise verifier ──
 var _currentVerifier = null;
 function doVerify(){
+  var btn = document.getElementById('exMainBtn');
+  if(btn && btn._fl_mode === 'advance'){
+    advanceFromExercise();
+    return;
+  }
   if(_locked)return;
   if(_currentVerifier)_currentVerifier();
 }
@@ -1365,7 +1384,9 @@ function revealFeedback(ok, correctStr, card){
   zone.innerHTML = html;
   btn.className = 'ex-main-btn ' + (ok ? 'ok' : 'ko');
   btn.textContent = ok ? '✓ Continuer →' : '→ Continuer quand même';
-  btn.setAttribute('onclick','advanceFromExercise()');
+  // Remove old listeners by replacing the node clone trick is unreliable;
+  // instead we use a flag on the button
+  btn._fl_mode = 'advance';
 }
 
 // ── WORD ORDER ─────────────────────────────────────────────
@@ -1396,6 +1417,7 @@ function renderWordOrder(card){
     + '<div class="wo-chips-pool" id="woPool">' + chipsHtml + '</div>';
 
   ea.innerHTML = exWrap(inner);
+  attachMainBtn();
 }
 
 function escHtml(s){
@@ -1482,6 +1504,7 @@ function renderConjugaison(card){
     + '</div>';
 
   ea.innerHTML = exWrap(inner);
+  attachMainBtn();
 
   var inp = document.getElementById('conjInput');
   if(inp){
@@ -1524,6 +1547,7 @@ function renderTranslate(card){
     + '<input type="text" class="translation-input" id="translateInput" placeholder="Ta traduction…" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"/>';
 
   ea.innerHTML = exWrap(inner);
+  attachMainBtn();
 
   var inp = document.getElementById('translateInput');
   if(inp){
@@ -2806,9 +2830,17 @@ var _apiValidated=false;
 
 function validateApiKey(key){
   var statusEl=document.getElementById('apiStatus');
+  if(!statusEl)return;
   if(!key||key.length<20){
     statusEl.textContent=key.length>0?'⚠️':'🔒';
     _apiValidated=false;
+    return;
+  }
+  // If this key is already in localStorage (previously validated), trust it immediately
+  var savedKey=localStorage.getItem('fl_api_key');
+  if(savedKey&&savedKey===key){
+    statusEl.textContent='✅';
+    _apiValidated=true;
     return;
   }
   statusEl.textContent='⏳';
@@ -2822,17 +2854,22 @@ function validateApiKey(key){
       statusEl.textContent='❌';
       _apiValidated=false;
       localStorage.removeItem('fl_api_key');
-      showToast('❌ Clé API invalide — vérifie dans console.anthropic.com','error');
+      showToast('❌ Clé API invalide','error');
     }else if(res.ok||res.status===400){
-      // 400 = bad request but auth passed
       statusEl.textContent='✅';
       _apiValidated=true;
       localStorage.setItem('fl_api_key',key);
     }else{
-      statusEl.textContent='⚠️';
+      // Network issue or unknown error — don't reset if we have a saved key
+      if(savedKey===key){statusEl.textContent='✅';_apiValidated=true;}
+      else statusEl.textContent='⚠️';
     }
   })
-  .catch(function(){statusEl.textContent='⚠️';});
+  .catch(function(){
+    // Network blocked (common in WKWebView) — trust saved key
+    if(savedKey===key){statusEl.textContent='✅';_apiValidated=true;}
+    else statusEl.textContent='⚠️';
+  });
 }
 
 function init(){
@@ -2845,15 +2882,22 @@ function init(){
   var savedKey=localStorage.getItem('fl_api_key');
   if(savedKey){
     apiInput.value=savedKey;
-    document.getElementById('apiStatus').textContent='✅';
     _apiValidated=true;
+    var statusEl=document.getElementById('apiStatus');
+    if(statusEl)statusEl.textContent='✅';
   }
 
   // Live feedback on typing
   apiInput.addEventListener('input',function(){
     var v=apiInput.value.trim();
-    document.getElementById('apiStatus').textContent=v.length>20?'⏳':v.length>0?'⚠️':'🔒';
-    _apiValidated=false;
+    var saved=localStorage.getItem('fl_api_key');
+    if(v===saved&&v.length>10){
+      document.getElementById('apiStatus').textContent='✅';
+      _apiValidated=true;
+    } else {
+      document.getElementById('apiStatus').textContent=v.length>0?'✏️':'🔒';
+      _apiValidated=false;
+    }
   });
 
   // Validate on blur
