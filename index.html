@@ -690,7 +690,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.4 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.5 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1423,7 +1423,17 @@ function renderWordOrder(card){
   if(!ea) return;
 
   _woPlaced = [];
-  _woShuffled = card.words_shuffled || shuffleArr((card.correct_order||[]).slice());
+  // Prefer words_shuffled from API; fall back to shuffled correct_order
+  var rawWords = (card.words_shuffled && card.words_shuffled.length > 0)
+    ? card.words_shuffled
+    : shuffleArr((card.correct_order||[]).slice());
+  _woShuffled = rawWords;
+  // Align correct_order to same set of words (handles API inconsistencies)
+  if(card.correct_order && card.correct_order.length !== _woShuffled.length){
+    // Use sentence_es split as fallback
+    var sentWords = (card.sentence_es||'').split(/\s+/).filter(Boolean);
+    if(sentWords.length === _woShuffled.length) card.correct_order = sentWords;
+  }
   _currentVerifier = checkWordOrder;
   _locked = false;
 
@@ -1489,13 +1499,16 @@ function checkWordOrder(){
   var card = S.cards[S.currentIndex];
   if(!card) return;
   var correct = card.correct_order || [];
-  if(_woPlaced.length < correct.length){
+  // Compare against _woShuffled (chips shown) not correct_order (may differ in length)
+  if(_woPlaced.length < _woShuffled.length){
     showToast('Place tous les mots !', 'info');
     return;
   }
   _locked = true;
   var userAnswer = _woPlaced.map(function(i){return i.word;});
-  var ok = userAnswer.join(' ').toLowerCase() === correct.join(' ').toLowerCase();
+  // Strip trailing punctuation for comparison
+  function normWo(s){ return s.toLowerCase().replace(/[.,!?;:]+$/,'').trim(); }
+  var ok = userAnswer.map(normWo).join(' ') === correct.map(normWo).join(' ');
   var zone = document.getElementById('woDropZone');
   if(zone) zone.className = 'wo-drop-zone ' + (ok ? 'ok-zone' : 'ko-zone');
   if(ok) onCorrect(true);
