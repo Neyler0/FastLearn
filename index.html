@@ -1144,12 +1144,9 @@ function generateCards(){
 
   var vocabBeginner='vocab:{"type":"vocab","level":"'+lvl+'","front":"mot ou expression en '+tgt+'","translation":"traduction FR courte","is_verb":true/false,"example":"phrase exemple en '+tgt+' en contexte voyage","example_fr":"traduction francaise de cet exemple","word_translations":[{"es":"mot1","fr":"trad1"}],"conjugation":[{"pronoun":"'+prons[0]+'","form":"..."},{"pronoun":"'+prons[1]+'","form":"..."},{"pronoun":"'+prons[2]+'","form":"..."},{"pronoun":"'+prons[3]+'","form":"..."},{"pronoun":"'+prons[4]+'","form":"..."},{"pronoun":"'+prons[5]+'","form":"..."}],"glossary":[{"es":"mot","fr":"trad","type":"verbe"}]}';
   var vocabAdvanced='vocab:{"type":"vocab","level":"'+lvl+'","front":"mot en '+tgt+'","translation":"FR","is_verb":true/false,"example":"phrase exemple en '+tgt+'","example_fr":"traduction FR","conjugation":[{"pronoun":"'+prons[0]+'","form":"..."},{"pronoun":"'+prons[1]+'","form":"..."},{"pronoun":"'+prons[2]+'","form":"..."},{"pronoun":"'+prons[3]+'","form":"..."},{"pronoun":"'+prons[4]+'","form":"..."},{"pronoun":"'+prons[5]+'","form":"..."}],"glossary":[]}';
-  var schema=(isBeginnerLvl?vocabBeginner:vocabAdvanced)+'
-';
-  schema+='wordorder:{"type":"wordorder","level":"'+lvl+'","words_shuffled":["w1","w2","w3","w4"],"correct_order":["w1","w2","w3","w4"],"sentence_es":"phrase reconstituee","translation_fr":"traduction FR","why_wrong":"conseil grammatical en français","feedback_example":"autre phrase en '+tgt+'","feedback_example_fr":"traduction FR","glossary":[{"es":"mot","fr":"trad","type":"verbe"}]}
-';
-  schema+='translate:{"type":"translate","level":"'+lvl+'","sentence_es":"phrase complete en '+tgt+'","translation_fr":"traduction FR","alt_translations":["variante1"],"why_wrong":"point grammatical a retenir en français","feedback_example":"phrase en '+tgt+' similaire","feedback_example_fr":"traduction FR","glossary":[{"es":"mot","fr":"trad","type":"nom"}]}
-';
+  var schema=(isBeginnerLvl?vocabBeginner:vocabAdvanced)+'\n';
+  schema+='wordorder:{"type":"wordorder","level":"'+lvl+'","words_shuffled":["w1","w2","w3","w4"],"correct_order":["w1","w2","w3","w4"],"sentence_es":"phrase reconstituee","translation_fr":"traduction FR","why_wrong":"conseil grammatical en français","feedback_example":"autre phrase en '+tgt+'","feedback_example_fr":"traduction FR","glossary":[{"es":"mot","fr":"trad","type":"verbe"}]}\n';
+  schema+='translate:{"type":"translate","level":"'+lvl+'","sentence_es":"phrase complete en '+tgt+'","translation_fr":"traduction FR","alt_translations":["variante1"],"why_wrong":"point grammatical a retenir en français","feedback_example":"phrase en '+tgt+' similaire","feedback_example_fr":"traduction FR","glossary":[{"es":"mot","fr":"trad","type":"nom"}]}\n';
   schema+='conjugaison:{"type":"conjugaison","level":"'+lvl+'","infinitive":"verbe-infinitif","pronoun":"pronom","tense":"presente/preterito/futuro","tense_fr":"présent/passé/futur","correct":"forme-conjuguee","sentence_context":"phrase avec ___ a la place du verbe","sentence_context_fr":"traduction FR avec ___","why_wrong":"explication terminaison ou irregularite en français","feedback_example":"autre phrase avec ce verbe conjugue","feedback_example_fr":"traduction FR","glossary":[{"es":"verbe","fr":"trad","type":"verbe"}]}';
 
   var userPrompt='Theme: "'+topic+'"\nNiveau: '+lvl+'\n'+dist+'\nRESPECTE EXACTEMENT ces schemas JSON:\n'+schema;
@@ -1395,7 +1392,7 @@ function renderWordOrder(card){
     + '</div>'
     + '<div class="ex-prompt">Recompose la phrase</div>'
     + '<div class="ex-hint-fr">' + escHtml(card.translation_fr || '') + '</div>'
-    + '<div class="wo-drop-zone" id="woDropZone"><span class="wo-placeholder" id="woPlaceholder">Appuie sur les mots dans l'ordre…</span></div>'
+    + '<div class="wo-drop-zone" id="woDropZone"><span class="wo-placeholder" id="woPlaceholder">Appuie sur les mots dans l&#39;ordre…</span></div>'
     + '<div class="wo-chips-pool" id="woPool">' + chipsHtml + '</div>';
 
   ea.innerHTML = exWrap(inner);
@@ -1434,7 +1431,7 @@ function woUpdateDropZone(){
   var ph = document.getElementById('woPlaceholder');
   if(!zone) return;
   if(_woPlaced.length === 0){
-    zone.innerHTML = '<span class="wo-placeholder" id="woPlaceholder">Appuie sur les mots dans l'ordre…</span>';
+    zone.innerHTML = '<span class="wo-placeholder" id="woPlaceholder">Appuie sur les mots dans l&#39;ordre…</span>';
     return;
   }
   zone.innerHTML = _woPlaced.map(function(item, i){
@@ -1523,7 +1520,7 @@ function renderTranslate(card){
     + '<span class="ex-level-tag level-' + lvl + '">' + lvl + '</span>'
     + '</div>'
     + '<div class="ex-prompt">Traduis en français</div>'
-    + '<div class="ex-sentence" style="font-family:'DM Serif Display',serif;font-size:22px">' + escHtml(card.sentence_es || '') + '</div>'
+    + '<div class="ex-sentence" style="font-family:&quot;DM Serif Display&quot;,serif;font-size:22px">' + escHtml(card.sentence_es || '') + '</div>'
     + '<input type="text" class="translation-input" id="translateInput" placeholder="Ta traduction…" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"/>';
 
   ea.innerHTML = exWrap(inner);
