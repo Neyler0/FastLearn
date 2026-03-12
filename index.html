@@ -149,7 +149,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
    Architecture: exercise-box (top) + ex-fb-zone (middle) + ex-main-btn (bottom)
    The button is ALWAYS in DOM. Class changes after answer. ZERO show/hide.
    ============================================================ */
-.exercise-wrap{display:flex;flex-direction:column;margin-bottom:16px}
+.exercise-wrap{display:flex;flex-direction:column;margin-bottom:0}
 .exercise-box{background:var(--card-bg);border:1px solid rgba(255,255,255,.08);border-bottom:none;border-radius:18px 18px 0 0;padding:22px 18px 18px;position:relative;overflow:hidden}
 .exercise-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,197,71,.04) 0%,transparent 60%);pointer-events:none}
 .ex-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -180,7 +180,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .conj-input.ko{border-color:var(--danger)!important;color:var(--danger)}
 .conj-tense-tag{font-size:10px;font-family:var(--mono,monospace);color:var(--muted);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
 /* FEEDBACK ZONE — always in DOM, empty initially, filled after answer */
-.ex-fb-zone{background:var(--card-bg);border-left:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.08);border-top:none}
+.ex-fb-zone{background:var(--card-bg);border-left:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.08)}
 .exfb-inner{padding:14px 16px 12px}
 .exfb-inner.ok{background:rgba(78,202,139,.07);border-top:1px solid rgba(78,202,139,.2)}
 .exfb-inner.ko{background:rgba(232,93,93,.06);border-top:1px solid rgba(232,93,93,.2)}
@@ -193,15 +193,22 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .exfb-ex-es{font-size:12px;font-weight:600;color:var(--text);font-style:italic;line-height:1.4}
 .exfb-ex-fr{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);margin-top:3px}
 /* THE BUTTON — always visible, class/text change after answer */
-.ex-main-btn{display:block;width:100%;padding:18px 20px;border:none;border-top:1px solid rgba(255,255,255,.06);border-radius:0 0 18px 18px;font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;letter-spacing:.4px;margin-top:0}
+.ex-main-btn{display:block;width:100%;padding:18px 20px;border:none;border-top:1px solid rgba(255,255,255,.06);border-radius:0 0 18px 18px;font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;letter-spacing:.4px;margin-top:0;margin-bottom:80px}
 .ex-main-btn:active{opacity:.68}
 .ex-main-btn.verify{background:var(--accent);color:#0c0c0f}
 .ex-main-btn.ok{background:var(--success);color:#0c0c0f}
 .ex-main-btn.ko{background:#1a0808;color:var(--danger);border-top:1px solid rgba(232,93,93,.25)!important}
 
-.correct-input{border-color:var(--success);background:rgba(78,202,139,.06)}
-.translation-input.wrong-input{border-color:var(--danger);background:rgba(232,93,93,.06)}
-
+.translation-input{
+  display:block;width:100%;box-sizing:border-box;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 16px;font-family:'Bricolage Grotesque',sans-serif;font-size:16px;
+  font-weight:600;color:var(--text);-webkit-appearance:none;outline:none;
+  margin-top:12px;
+}
+.translation-input:focus{border-color:rgba(232,197,71,.5)}
+.translation-input.correct-input{border-color:var(--success)!important;background:rgba(78,202,139,.06)}
+.translation-input.wrong-input{border-color:var(--danger)!important;background:rgba(232,93,93,.06)}
 .check-btn:disabled{opacity:.4}
 
 /* ============================================================
@@ -690,7 +697,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.5 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.6 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1034,6 +1041,11 @@ function resetProgress(){
 // ============================================================
 function switchView(name){
   hideFeedbackSheet();
+  // Hide permanent exercise elements when leaving the learn view
+  if(name !== 'learn'){
+    var _sb=document.getElementById('exMainBtn'); if(_sb)_sb.style.display='none';
+    var _sz=document.getElementById('exFbZone');  if(_sz){_sz.style.display='none';_sz.innerHTML='';}
+  }
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.querySelectorAll('.bottom-tab').forEach(function(b){b.classList.remove('active');});
   var v=document.getElementById('view-'+name);if(v)v.classList.add('active');
@@ -1844,6 +1856,9 @@ function showCompletion(){
   saveProgress();
 
   document.getElementById('mainContent').style.display='none';
+  // Hide permanent exercise btn + feedback zone
+  var _cb=document.getElementById('exMainBtn'); if(_cb)_cb.style.display='none';
+  var _cz=document.getElementById('exFbZone');  if(_cz){_cz.style.display='none';_cz.innerHTML='';}
   var cs=document.getElementById('completionScreen');cs.classList.add('show');
 
   // — Check if exam should be proposed —
@@ -2022,6 +2037,9 @@ function showExamResult(){
   var lvl=getLvl();
 
   document.getElementById('mainContent').style.display='none';
+  // Hide permanent exercise btn + feedback zone
+  var _cb=document.getElementById('exMainBtn'); if(_cb)_cb.style.display='none';
+  var _cz=document.getElementById('exFbZone');  if(_cz){_cz.style.display='none';_cz.innerHTML='';}
   var cs=document.getElementById('completionScreen');cs.classList.add('show');
 
   var icon=passed?(isMid?'📝':'🏆'):'💔';
