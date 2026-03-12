@@ -687,7 +687,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.1 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.2 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1332,62 +1332,74 @@ function exWrap(innerHtml){
   return '<div class="exercise-wrap">'
     + '<div class="exercise-box">' + innerHtml + '</div>'
     + '<div class="ex-fb-zone" id="exFbZone"></div>'
-    + '<button class="ex-main-btn verify" id="exMainBtn">Vérifier →</button>'
+    + '<button class="ex-main-btn verify" id="exMainBtn">V\u00e9rifier \u2192</button>'
     + '</div>';
 }
 
-// Call this after every ea.innerHTML = exWrap(...) to attach the button
+// ── Module-level refs — avoids getElementById after blur/resize (WKWebView safe) ──
+var _exBtn    = null;
+var _exFbZone = null;
+// ── Debounce — prevents touchend+click double-fire on iOS ──
+var _tapGuard = false;
+
 function attachMainBtn(){
-  var btn = document.getElementById('exMainBtn');
-  if(!btn) return;
-  // Both touchend AND click — covers all iOS WKWebView versions
-  btn.addEventListener('touchend', function(e){
+  _exBtn    = document.getElementById('exMainBtn');
+  _exFbZone = document.getElementById('exFbZone');
+  if(!_exBtn) return;
+  _exBtn.addEventListener('touchstart', function(e){
     e.preventDefault();
+    if(_tapGuard) return;
+    _tapGuard = true;
+    setTimeout(function(){ _tapGuard = false; }, 700);
     doVerify();
-  });
-  btn.addEventListener('click', function(e){
+  }, {passive:false});
+  _exBtn.addEventListener('click', function(){
+    if(_tapGuard) return;
     doVerify();
   });
 }
 
-// ── Global doVerify — dispatches to current exercise verifier ──
+// ── doVerify — dispatches to verifier or advances ──
 var _currentVerifier = null;
 function doVerify(){
-  var btn = document.getElementById('exMainBtn');
-  if(btn && btn._fl_mode === 'advance'){
+  if(_exBtn && _exBtn._fl_mode === 'advance'){
+    _exBtn._fl_mode = null;
     advanceFromExercise();
     return;
   }
-  if(_locked)return;
-  if(_currentVerifier)_currentVerifier();
+  if(_locked) return;
+  if(_currentVerifier) _currentVerifier();
 }
 
-// ── Reveal feedback — the only show/hide mechanism ──
-// Both exFbZone and exMainBtn are ALWAYS in DOM.
-// We just change their content/class. Guaranteed to work.
+// ── revealFeedback — uses stored refs, immune to DOM resize/blur ──
 function revealFeedback(ok, correctStr, card){
-  var zone = document.getElementById('exFbZone');
-  var btn  = document.getElementById('exMainBtn');
-  if(!zone || !btn) return;
-
-  var html = '<div class="exfb-inner ' + (ok?'ok':'ko') + '">';
-  html += '<div class="exfb-title ' + (ok?'ok':'ko') + '">' + (ok ? '✓ Correct !' : '✗ Incorrect') + '</div>';
-  if(correctStr) html += '<div class="exfb-correct">✓ ' + correctStr + '</div>';
-  if(card && card.why_wrong) html += '<div class="exfb-tip">💡 ' + card.why_wrong + '</div>';
-  if(card && card.feedback_example){
-    html += '<div class="exfb-example"><div class="exfb-ex-es">' + card.feedback_example + '</div>';
-    if(card.feedback_example_fr) html += '<div class="exfb-ex-fr">' + card.feedback_example_fr + '</div>';
+  var zone = _exFbZone || document.getElementById('exFbZone');
+  var btn  = _exBtn    || document.getElementById('exMainBtn');
+  if(!btn) return;
+  if(zone){
+    var html = '<div class="exfb-inner ' + (ok?'ok':'ko') + '">';
+    html += '<div class="exfb-title ' + (ok?'ok':'ko') + '">' + (ok ? '\u2713 Correct\u00a0!' : '\u2717 Incorrect') + '</div>';
+    if(correctStr) html += '<div class="exfb-correct">\u2713 ' + correctStr + '</div>';
+    if(card && card.why_wrong) html += '<div class="exfb-tip">\ud83d\udca1 ' + card.why_wrong + '</div>';
+    if(card && card.feedback_example){
+      html += '<div class="exfb-example"><div class="exfb-ex-es">' + card.feedback_example + '</div>';
+      if(card.feedback_example_fr) html += '<div class="exfb-ex-fr">' + card.feedback_example_fr + '</div>';
+      html += '</div>';
+    }
     html += '</div>';
+    zone.innerHTML = html;
   }
-  html += '</div>';
-
-  zone.innerHTML = html;
-  btn.className = 'ex-main-btn ' + (ok ? 'ok' : 'ko');
-  btn.textContent = ok ? '✓ Continuer →' : '→ Continuer quand même';
-  // Remove old listeners by replacing the node clone trick is unreliable;
-  // instead we use a flag on the button
-  btn._fl_mode = 'advance';
+  btn.textContent = ok ? '\u2713 Continuer \u2192' : '\u2192 Continuer quand m\u00eame';
+  btn.className   = 'ex-main-btn ' + (ok ? 'ok' : 'ko');
+  btn._fl_mode    = 'advance';
+  _tapGuard       = false; // allow next tap immediately
 }
+
+// ── showFeedback alias (SRS/exam compat) ──
+function showFeedback(ok, msg, sub, card){ revealFeedback(ok, sub, card); }
+function hideFeedbackSheet(){ }
+function showContinueBar(ok){ }
+function hideContinueBar(){ }
 
 // ── WORD ORDER ─────────────────────────────────────────────
 var _woPlaced = [];   // words placed in drop zone (in order)
@@ -1522,7 +1534,6 @@ function checkConjugaison(){
   var answer = inp.value.trim();
   if(!answer){ showToast('Écris la forme conjuguée !', 'info'); return; }
   _locked = true;
-  inp.blur();
   var ok = norm(answer) === norm(card.correct || '');
   inp.classList.add(ok ? 'ok' : 'ko');
   if(ok) onCorrect(true);
@@ -1565,7 +1576,6 @@ function checkTranslate(){
   var userAnswer = input.value.trim();
   if(!userAnswer){ showToast('✏️ Écris ta traduction', 'info'); return; }
   _locked = true;
-  input.blur();
   var btn = document.getElementById('exMainBtn');
   if(btn){ btn.className = 'ex-main-btn verify'; btn.textContent = '⏳'; }
   var allCorrect = [card.translation_fr].concat(card.alt_translations || []);
@@ -1581,11 +1591,7 @@ function checkTranslate(){
   revealFeedback(ok, card.translation_fr, card);
 }
 
-// ── Shared feedback helpers (kept for SRS/exam compat) ──
-function showFeedback(ok, msg, sub, card){ revealFeedback(ok, sub, card); }
-function hideFeedbackSheet(){ /* no-op — nothing to hide */ }
-function showContinueBar(ok){ /* no-op */ }
-function hideContinueBar(){ /* no-op */ }
+
 
 function advanceFromExercise(){
   _locked = false;
