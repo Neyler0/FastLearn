@@ -1371,8 +1371,10 @@ function attachMainBtn(){
 // ── doVerify — dispatches to verifier or advances ──
 var _currentVerifier = null;
 function doVerify(){
-  if(_exBtn && _exBtn._fl_mode === 'advance'){
-    _exBtn._fl_mode = null;
+  var btn = _exBtn || document.getElementById('exMainBtn');
+  if(btn && btn._fl_mode === 'advance'){
+    btn._fl_mode = null;
+    _exBtn = btn;
     advanceFromExercise();
     return;
   }
@@ -1730,10 +1732,16 @@ function renderSrsBanner(){
 function updateProgress(){
   var th=LEVEL_THRESHOLDS()[getLvl()];
   var lvlPct=Math.min(100,(S.totalMastered/th)*100);
-  document.getElementById('levelFill').style.width=lvlPct+'%';
+  var levelFill=document.getElementById('levelFill');
+  if(levelFill)levelFill.style.width=lvlPct+'%';
+
+  // Legacy streak bar ids kept for backward compatibility with older markup.
   var streakPct=Math.min(100,(S.streak/STREAK_MAX)*100);
-  document.getElementById('streakFill').style.width=streakPct+'%';
-  document.getElementById('streakVal').textContent=S.streak+'/'+STREAK_MAX;
+  var streakFill=document.getElementById('streakFill');
+  if(streakFill)streakFill.style.width=streakPct+'%';
+  var streakVal=document.getElementById('streakVal');
+  if(streakVal)streakVal.textContent=S.streak+'/'+STREAK_MAX;
+
   var lvl=getLvl();
   var el=document.getElementById('levelName');el.textContent=lvl;el.className='level-badge level-'+lvl;
   updateDailyBar();
