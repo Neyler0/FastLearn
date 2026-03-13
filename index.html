@@ -1361,46 +1361,6 @@ function rememberRecentCards(cards){
 }
 
 
-function cardDiversityKey(card){
-  if(!card)return '';
-  var type=String(card.type||'').toLowerCase();
-  var base='';
-  if(type==='vocab')base=card.front||card.word||card.term||'';
-  else if(type==='wordorder')base=(card.correct_order||[]).join(' ');
-  else if(type==='translate')base=card.sentence_es||card.sentence||'';
-  else if(type==='conjugaison')base=(card.infinitive||'')+' '+(card.correct||'');
-  else if(type==='mcq')base=(card.sentence||card.sentence_es||'')+' '+(card.correct||'');
-  else if(type==='fill')base=(card.before||'')+' __ '+(card.after||'')+' '+(card.correct||card.blank||'');
-  return type+'|'+norm(base).trim();
-}
-
-function applyDiversityFilter(cards){
-  var recentMap={};
-  (S.recentCardKeys||[]).forEach(function(k){recentMap[k]=1;});
-  var seenThisDeck={};
-  var unique=cards.filter(function(c){
-    var k=cardDiversityKey(c);
-    if(!k||seenThisDeck[k])return false;
-    seenThisDeck[k]=1;
-    return true;
-  });
-  var filtered=unique.filter(function(c){return !recentMap[cardDiversityKey(c)];});
-  if(filtered.length>=Math.ceil(unique.length*0.5))return filtered;
-  return unique;
-}
-
-function rememberRecentCards(cards){
-  var arr=(S.recentCardKeys||[]).slice();
-  cards.forEach(function(c){
-    var k=cardDiversityKey(c);
-    if(k)arr.push(k);
-  });
-  var seen={};
-  arr=arr.reverse().filter(function(k){if(seen[k])return false;seen[k]=1;return true;}).reverse();
-  if(arr.length>220)arr=arr.slice(arr.length-220);
-  S.recentCardKeys=arr;
-}
-
 function normalizeWordOrderCard(c){
   if(!c||c.type!=='wordorder')return c;
   var corr=Array.isArray(c.correct_order)?c.correct_order.slice():[];
@@ -2023,107 +1983,6 @@ function checkFill(){
   inp.classList.add(ok?'correct-input':'wrong-input');
   if(ok)onCorrect(true);else onWrong(card.correct||'');
   revealFeedback(ok,card.correct||'',card);
-}
-
-// ── MCQ (exam) ───────────────────────────────────────────────
-var _mcqSelected='';
-
-function getMcqOptions(card){
-  var opts=[];
-  if(Array.isArray(card.options))opts=card.options.slice();
-  if(Array.isArray(card.distractors))opts=opts.concat(card.distractors);
-  if(card.correct)opts.push(card.correct);
-  opts=opts.filter(Boolean).map(function(o){return String(o).trim();}).filter(Boolean);
-  var seen={};
-  opts=opts.filter(function(o){var k=norm(o);if(seen[k])return false;seen[k]=1;return true;});
-  return shuffleArr(opts);
-}
-
-function renderMcq(card){
-  var lvl=card.level||getLvl();
-  var ea=document.getElementById('exerciseArea');
-  if(!ea)return;
-  _currentVerifier=checkMcq;
-  _locked=false;
-  _mcqSelected='';
-  var sentence=card.sentence||card.sentence_es||'';
-  var options=getMcqOptions(card);
-  var optionsHtml=options.map(function(o,i){
-    return '<button class="sit-choice-btn" id="mcqOpt'+i+'" onclick="pickMcq('+i+')" data-val="'+escHtml(o)+'"><span class="sit-choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+escHtml(o)+'</span></button>';
-  }).join('');
-  var inner='<div class="ex-header">'
-    +'<span class="ex-type-badge">Choix multiple</span>'
-    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
-    +'</div>'
-    +'<div class="ex-prompt">Choisis la bonne réponse</div>'
-    +(sentence?'<div class="ex-sentence" style="font-size:18px">'+escHtml(sentence)+'</div>':'')
-    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
-    +'<div class="sit-choices">'+optionsHtml+'</div>';
-  ea.innerHTML=exWrap(inner);
-  attachMainBtn();
-}
-
-function pickMcq(idx){
-  if(_locked)return;
-  var btn=document.getElementById('mcqOpt'+idx);
-  if(!btn)return;
-  _mcqSelected=btn.getAttribute('data-val')||'';
-  var nodes=document.querySelectorAll('[id^="mcqOpt"]');
-  nodes.forEach(function(n){n.style.borderColor='rgba(139,114,245,.25)';n.style.background='var(--surface)';});
-  btn.style.borderColor='var(--accent)';
-  btn.style.background='rgba(232,197,71,.08)';
-}
-
-function checkMcq(){
-  if(_locked)return;
-  var card=S.cards[S.currentIndex];
-  if(!card)return;
-  if(!_mcqSelected){showToast('Choisis une option', 'info');return;}
-  _locked=true;
-  var ok=norm(_mcqSelected)===norm(card.correct||'');
-  if(ok)onCorrect(true);else onWrong(card.correct||'');
-  revealFeedback(ok, card.correct||'', card);
-}
-
-// ── FILL (exam) ──────────────────────────────────────────────
-function renderFill(card){
-  var lvl=card.level||getLvl();
-  var ea=document.getElementById('exerciseArea');
-  if(!ea)return;
-  _currentVerifier=checkFill;
-  _locked=false;
-  var before=card.before||'';
-  var after=card.after||'';
-  if((!before&&!after) && card.sentence && card.correct){
-    var i=card.sentence.toLowerCase().indexOf(String(card.correct).toLowerCase());
-    if(i>-1){before=card.sentence.slice(0,i).trim();after=card.sentence.slice(i+String(card.correct).length).trim();}
-  }
-  var inner='<div class="ex-header">'
-    +'<span class="ex-type-badge">Texte à trous</span>'
-    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
-    +'</div>'
-    +'<div class="ex-prompt">Complète la phrase</div>'
-    +'<div class="ex-sentence" style="font-size:18px">'+escHtml((before?before+' ':'')+'____'+(after?' '+after:''))+'</div>'
-    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
-    +'<input type="text" class="translation-input" id="fillInput" placeholder="Mot manquant…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>';
-  ea.innerHTML=exWrap(inner);
-  attachMainBtn();
-  var inp=document.getElementById('fillInput');
-  if(inp){inp.addEventListener('keydown', function(e){if(e.key==='Enter'&&!_locked)checkFill();});}
-}
-
-function checkFill(){
-  if(_locked)return;
-  var inp=document.getElementById('fillInput');
-  var card=S.cards[S.currentIndex];
-  if(!inp||!card)return;
-  var answer=inp.value.trim();
-  if(!answer){showToast('Écris le mot manquant', 'info');return;}
-  _locked=true;
-  var ok=norm(answer)===norm(card.correct||'');
-  inp.classList.add(ok?'correct-input':'wrong-input');
-  if(ok)onCorrect(true);else onWrong(card.correct||'');
-  revealFeedback(ok, card.correct||'', card);
 }
 
 // ── CONJUGAISON ─────────────────────────────────────────────
@@ -2974,7 +2833,7 @@ function renderQuickReview(){
   if(_qrIdx>=_qrCards.length){
     var correct=_qrResults.filter(function(r){return r==='mastered';}).length;
     var pct=Math.round((correct/_qrCards.length)*100);
-    addXP(correct*5);saveProgress();
+    saveProgress();
     mc.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 12px;gap:16px"><div style="font-size:48px">⚡</div><div style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--accent)">Révision terminée !</div><div style="font-size:14px;color:var(--muted)">'+correct+'/'+_qrCards.length+' maîtrisés · '+pct+'%</div><div style="display:flex;flex-direction:column;gap:10px;width:100%"><button class="topic-cta-btn" onclick="startQuickReview()">↻ Relancer</button><button class="continue-same-deck-btn" onclick="renderEmptyState()">Retour</button></div></div>';
     return;
   }
@@ -3024,33 +2883,15 @@ function answerQR(result){
 // ============================================================
 // SITUATION MODE
 // ============================================================
-var _sitLevel='A1';
-var _sitConversation=[];  // [{role:'user'|'assistant', content}]
-var _sitExchangesDone=0;
-var _sitErrors=[];
-var _sitXpEarned=0;
-var _sitXpEarned=0;
-
-function setSitLevel(lvl){
-  _sitLevel=lvl;
-  document.querySelectorAll('.sit-lvl-pill').forEach(function(p){p.classList.remove('active');});
-  var pills=document.querySelectorAll('#sitLevelPills .sit-lvl-pill');
-  pills.forEach(function(p){if(p.textContent===lvl)p.classList.add('active');});
-}
-
-function setSitExample(el){
-  var ta=document.getElementById('sitInput');
-  if(ta)ta.value=el.textContent;
-}
-
 // ============================================================
-// SITUATION / CONVERSATION MODE — version unique et définitive
+// SITUATION / CONVERSATION MODE
 // ============================================================
 var _sitLevel='A1';
 var _sitScenario='';
 var _sitConversation=[];
 var _sitExchangesDone=0;
 var _sitErrors=[];
+var _sitXpEarned=0;
 
 function getSitSystemPrompt(sit,level){
   var cfg=getLangCfg();
@@ -3202,22 +3043,11 @@ function showSitResult(){
   var errHtml=_sitErrors.length?_sitErrors.map(function(e){
     return'<div class="sit-err-item"><div class="sit-err-you">✗ '+escQ(e.user)+'</div><div class="sit-err-correct">'+escQ(e.correction)+'</div></div>';
   }).join(''):'<div style="color:var(--success);font-size:13px;font-family:var(--mono,monospace);padding:8px 0">✓ Aucune erreur !</div>';
-  var xpGain=_sitXpEarned;
   result.innerHTML='<div class="sit-result-title">Conversation terminée !</div>'
     +'<div class="sit-result-sub">'+SIT_EXCHANGES+' échanges · +'+xpGain+' XP (10 XP réponse correcte, 5 XP avec correction)</div>'
     +'<div class="sit-result-errors">'+errHtml+'</div>'
     +'<button class="sit-restart-btn" onclick="resetSituationView()">↻ Nouvelle conversation</button>';
 }
-
-function renderSitExamples(){
-  var cfg=getLangCfg();
-  var el=document.getElementById('sitExamplesWrap');
-  if(!el)return;
-  el.innerHTML=cfg.sitExamples.map(function(ex){
-    return '<button class="sit-example-chip" onclick="setSitExample(this)">'+ex+'</button>';
-  }).join('');
-}
-
 
 function appendSitMsg(role,text,correction,vocab,engage){
   var msgs=document.getElementById('sitMessages');if(!msgs)return;
