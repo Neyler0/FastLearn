@@ -624,7 +624,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     </svg>
     <div>
       <div class="burger-app-name">FastLearn</div>
-      <div class="burger-version">v3.0.0 · Haiku 4.5</div>
+      <div class="burger-version">v3.0.1 · Haiku 4.5</div>
     </div>
     <button class="burger-close" onclick="closeBurger()">×</button>
   </div>
@@ -812,7 +812,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v3.0.0 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v3.0.1 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -1244,7 +1244,25 @@ function renderSitExamples(){
 }
 
 function getCurrentSaveKey(){return getLangCfg().saveKey;}
-var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','dailyDate','dailyStreak','dailyXp','srsDB','recentCardKeys'];
+var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','srsDB','recentCardKeys'];
+var DAILY_FIELDS=['dailyDate','dailyStreak','dailyXp'];
+
+function saveDaily(){
+  try{
+    var d={};
+    DAILY_FIELDS.forEach(function(k){d[k]=S[k];});
+    localStorage.setItem('fl_daily',JSON.stringify(d));
+  }catch(e){}
+}
+
+function loadDaily(){
+  try{
+    var raw=localStorage.getItem('fl_daily');
+    if(!raw)return;
+    var d=JSON.parse(raw);
+    DAILY_FIELDS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});
+  }catch(e){}
+}
 
 function saveProgress(){
   try{
@@ -1252,6 +1270,7 @@ function saveProgress(){
     SAVE_FIELDS.forEach(function(k){d[k]=S[k];});
     localStorage.setItem(getCurrentSaveKey(),JSON.stringify(d));
   }catch(e){console.warn('Save failed',e);}
+  saveDaily();
 }
 
 function loadProgress(){
@@ -1261,6 +1280,7 @@ function loadProgress(){
     var d=JSON.parse(raw);
     SAVE_FIELDS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});
   }catch(e){console.warn('Load failed',e);}
+  loadDaily();
 }
 
 function resetProgress(){
@@ -2247,7 +2267,7 @@ function updateDailyBar(){
     else if(S.dailyDate&&S.dailyDate!==today){S.dailyStreak=1;}
     else if(!S.dailyDate){S.dailyStreak=1;}
     S.dailyDate=today;S.dailyXp=0;
-    saveProgress();
+    saveDaily();
   }
   var pct=Math.min(100,(S.dailyXp/DAILY_GOAL_XP)*100);
   var fill=document.getElementById('dailyFill');
@@ -3397,6 +3417,22 @@ function validateApiKey(key){
 }
 
 function init(){
+  // Migrate daily streak from per-language to global (one-time)
+  if(!localStorage.getItem('fl_daily')){
+    try{
+      var best={dailyDate:'',dailyStreak:0,dailyXp:0};
+      ['espanol_v1','english_v1'].forEach(function(key){
+        var raw=localStorage.getItem(key);if(!raw)return;
+        var d=JSON.parse(raw);
+        if((d.dailyStreak||0)>(best.dailyStreak||0)){
+          best.dailyDate=d.dailyDate||'';
+          best.dailyStreak=d.dailyStreak||0;
+          best.dailyXp=d.dailyXp||0;
+        }
+      });
+      if(best.dailyStreak>0)localStorage.setItem('fl_daily',JSON.stringify(best));
+    }catch(e){}
+  }
   loadProgress();
   renderEmptyState();updateStats();updateProgress();
 
