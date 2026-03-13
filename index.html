@@ -827,7 +827,7 @@ const LEVEL_DESCS_EN={
 };
 const LEVEL_ICONS_EN={A1:'🌱',A2:'🌿',B1:'🌳',B2:'⭐',C1:'🏆',C2:'💎','C2+':'👑'};
 const LEVEL_COLORS_EN={A1:'var(--a1)',A2:'var(--a2)',B1:'var(--b1)',B2:'var(--b2)',C1:'var(--c1)',C2:'#c084fc','C2+':'#f0abfc'};
-const LEVEL_THRESHOLDS_EN={A1:80,A2:180,B1:320,B2:500,C1:720,C2:1000,'C2+':1400};
+const LEVEL_THRESHOLDS_EN={A1:80,A2:160,B1:260,B2:400,C1:560,C2:760,'C2+':1000};
 const LEVEL_EX_TYPES_EN={
   A1:['vocab'],
   A2:['vocab','wordorder','translate'],
@@ -1134,6 +1134,119 @@ function rememberRecentCards(cards){
   S.recentCardKeys=arr;
 }
 
+
+function cardDiversityKey(card){
+  if(!card)return '';
+  var type=String(card.type||'').toLowerCase();
+  var base='';
+  if(type==='vocab')base=card.front||card.word||card.term||'';
+  else if(type==='wordorder')base=(card.correct_order||[]).join(' ');
+  else if(type==='translate')base=card.sentence_es||card.sentence||'';
+  else if(type==='conjugaison')base=(card.infinitive||'')+' '+(card.correct||'');
+  else if(type==='mcq')base=(card.sentence||card.sentence_es||'')+' '+(card.correct||'');
+  else if(type==='fill')base=(card.before||'')+' __ '+(card.after||'')+' '+(card.correct||card.blank||'');
+  return type+'|'+norm(base).trim();
+}
+
+function applyDiversityFilter(cards){
+  var recentMap={};
+  (S.recentCardKeys||[]).forEach(function(k){recentMap[k]=1;});
+  var seenThisDeck={};
+  var unique=cards.filter(function(c){
+    var k=cardDiversityKey(c);
+    if(!k||seenThisDeck[k])return false;
+    seenThisDeck[k]=1;
+    return true;
+  });
+  var filtered=unique.filter(function(c){return !recentMap[cardDiversityKey(c)];});
+  if(filtered.length>=Math.ceil(unique.length*0.5))return filtered;
+  return unique;
+}
+
+function rememberRecentCards(cards){
+  var arr=(S.recentCardKeys||[]).slice();
+  cards.forEach(function(c){
+    var k=cardDiversityKey(c);
+    if(k)arr.push(k);
+  });
+  var seen={};
+  arr=arr.reverse().filter(function(k){if(seen[k])return false;seen[k]=1;return true;}).reverse();
+  if(arr.length>220)arr=arr.slice(arr.length-220);
+  S.recentCardKeys=arr;
+}
+
+function normalizeWordOrderCard(c){
+  if(!c||c.type!=='wordorder')return c;
+  var corr=Array.isArray(c.correct_order)?c.correct_order.slice():[];
+  if(!corr.length&&c.sentence_es){corr=String(c.sentence_es).trim().split(/\s+/);}
+  corr=corr.map(function(w){return String(w||'').trim();}).filter(Boolean);
+  c.correct_order=corr;
+  if(!c.sentence_es&&corr.length)c.sentence_es=corr.join(' ');
+  var sh=Array.isArray(c.words_shuffled)?c.words_shuffled.slice():[];
+  sh=sh.map(function(w){return String(w||'').trim();}).filter(Boolean);
+  if(!sh.length||sh.length!==corr.length){
+    c.words_shuffled=shuffleArr(corr.slice());
+    return c;
+  }
+  var count={};
+  corr.forEach(function(w){var k=norm(w);count[k]=(count[k]||0)+1;});
+  var countSh={};
+  sh.forEach(function(w){var k=norm(w);countSh[k]=(countSh[k]||0)+1;});
+  var same=true;
+  Object.keys(count).forEach(function(k){if(count[k]!==countSh[k])same=false;});
+  Object.keys(countSh).forEach(function(k){if(count[k]!==countSh[k])same=false;});
+  c.words_shuffled=same?sh:shuffleArr(corr.slice());
+  return c;
+}
+
+function normalizeGeneratedCards(cards){
+  return (cards||[]).map(function(c){
+    if(!c||typeof c!=='object')return null;
+    if(c.type==='wordorder')c=normalizeWordOrderCard(c);
+    return c;
+  }).filter(Boolean);
+}
+
+function getRegisterProgressiveInstr(lang,lvl,isExam){
+  if(lvl==='A1')return 'A1: registre standard uniquement, pas d\'argot.';
+  if(lang==='en'){
+    if(lvl==='A2')return 'A2: ajoute 1 expression idiomatique ou familière max toutes les 3-4 cartes, jamais obscure.';
+    if(lvl==='B1')return 'B1: introduis des phrasal verbs fréquents et 1 idiome simple toutes les 2-3 cartes.';
+    if(lvl==='B2')return 'B2: inclure idiomes et nuances UK/US de façon régulière mais pédagogique.';
+    if(lvl==='C1')return 'C1: idiomes avancés, registres variés, collocations naturelles.';
+    return 'C2/C2+: idiomes, argot courant et nuances culturelles; toujours explicables en français.';
+  }
+  if(lvl==='A2')return 'A2: ajoute 1 expression usuelle/idiomatique simple toutes les 3-4 cartes.';
+  if(lvl==='B1')return 'B1: introduis tournures idiomatiques fréquentes et langage du quotidien.';
+  if(lvl==='B2')return 'B2: expressions idiomatiques naturelles, registres standard/familier progressifs.';
+  return 'C1+: idiomes riches, nuances de registre et expressions culturelles, avec explication pédagogique.';
+}
+
+function getSeenWordsForExam(limit){
+  var keys=Object.keys(S.glossaryDB||{});
+  return shuffle(keys).slice(0,limit||30);
+}
+
+function cardTextForSeenMatch(c){
+  if(!c)return '';
+  return [c.front,c.sentence,c.sentence_es,c.before,c.after,c.correct,(c.correct_order||[]).join(' '),(c.words_shuffled||[]).join(' ')]
+    .filter(Boolean).join(' ');
+}
+
+function prioritizeSeenWordsCards(cards, seenWords){
+  if(!seenWords||!seenWords.length)return cards;
+  var seen=seenWords.map(function(w){return norm(String(w||''));}).filter(Boolean);
+  var matched=[];var rest=[];
+  cards.forEach(function(c){
+    var txt=norm(cardTextForSeenMatch(c));
+    var hit=seen.some(function(w){return txt.indexOf(w)>-1;});
+    (hit?matched:rest).push(c);
+  });
+  var minNeeded=Math.floor(cards.length*0.5);
+  if(matched.length>=minNeeded)return shuffle(matched).concat(shuffle(rest));
+  return cards;
+}
+
 function tryParseJSON(raw){
   try{
     var s=raw.trim();
@@ -1186,25 +1299,13 @@ function generateCards(){
   var tcode=cfg.targetCode;
   var prons=cfg.pronArray;
 
-  // EN-specific slang & register instructions per level — MUST be before systemPrompt
-  var enSlangInstr='';
-  if(_lang==='en'){
-    var enSlangMap={
-      A1:'Focus on basic survival vocabulary, greetings, numbers, colours. Keep sentences very short and simple.',
-      A2:'Introduce common everyday expressions like "How are you doing?", "What\'s up?", "I\'m good thanks". Natural informal register.',
-      B1:'Include common idioms and phrasal verbs: "give up", "figure out", "no worries", "catch up". Real conversational English.',
-      B2:'Include British and American slang side by side: "cheers/thanks", "mate/buddy", "knackered/exhausted", "fancy/like". Phrasal verb clusters. Collocations.',
-      C1:'Include advanced idioms, formal and informal registers: "cutting-edge", "bite the bullet", "read between the lines", "touch base". Business English too.',
-      C2:'Master-level: subtle register shifts, irony markers, understatement, euphemisms. "I beg to differ", "That\'s a bit much", "fair enough", "spot on". Cultural references.',
-      'C2+':'Native-speaker slang, internet slang, British vs American cultural nuances, Gen Z expressions, memes, idioms with cultural origin stories. "vibe check", "lowkey", "no cap", "it\'s giving", "cheeky Nando\'s".',
-    };
-    enSlangInstr='\n'+(enSlangMap[lvl]||enSlangMap['C1'])+'\nFor EVERY card: include a usage note in French about register (formal/informal/slang/British/American). Add culture context when relevant.';
-  }
+    // Progressive register/idioms from A2 to C2+ (and standard-only in A1)
+  var regInstr=getRegisterProgressiveInstr(_lang,lvl,false);
 
   var glossInstructions=isBeginnerLvl
     ? 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj"}] avec les verbes conjugues, mots irreguliers ou peu courants que ce niveau ne connait probablement pas encore. A1: beaucoup de mots glossaires. A2: mots moyennement courants.'
     : 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj/expression"}] avec uniquement les mots rares, idiomatiques ou specifiques que ce niveau pourrait ne pas connaitre. B1/B2: quelques mots. C1: seulement les termes tres specifiques ou culturels.';
-  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+enSlangInstr;
+  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+' '+regInstr+' Ajoute des explications pédagogiques claires en français.';
 
   var dist='';
   if(lvl==='A1')dist='Genere '+CARDS_PER_DECK+' cartes vocab.';
@@ -1261,7 +1362,8 @@ function generateCards(){
   })
   .then(function(parsed){
     if(!parsed.cards||!parsed.cards.length)throw new Error('Aucune carte reçue');
-    var diversified=applyDiversityFilter(parsed.cards||[]);
+    var normalized=normalizeGeneratedCards(parsed.cards||[]);
+    var diversified=applyDiversityFilter(normalized);
     S.cards=shuffle(diversified);
     rememberRecentCards(S.cards);
     S.currentIndex=0;S.mastered=0;S.unknown=0;S.streak=0;
@@ -1697,6 +1799,107 @@ function checkFill(){
   revealFeedback(ok,card.correct||'',card);
 }
 
+// ── MCQ (exam) ───────────────────────────────────────────────
+var _mcqSelected='';
+
+function getMcqOptions(card){
+  var opts=[];
+  if(Array.isArray(card.options))opts=card.options.slice();
+  if(Array.isArray(card.distractors))opts=opts.concat(card.distractors);
+  if(card.correct)opts.push(card.correct);
+  opts=opts.filter(Boolean).map(function(o){return String(o).trim();}).filter(Boolean);
+  var seen={};
+  opts=opts.filter(function(o){var k=norm(o);if(seen[k])return false;seen[k]=1;return true;});
+  return shuffleArr(opts);
+}
+
+function renderMcq(card){
+  var lvl=card.level||getLvl();
+  var ea=document.getElementById('exerciseArea');
+  if(!ea)return;
+  _currentVerifier=checkMcq;
+  _locked=false;
+  _mcqSelected='';
+  var sentence=card.sentence||card.sentence_es||'';
+  var options=getMcqOptions(card);
+  var optionsHtml=options.map(function(o,i){
+    return '<button class="sit-choice-btn" id="mcqOpt'+i+'" onclick="pickMcq('+i+')" data-val="'+escHtml(o)+'"><span class="sit-choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+escHtml(o)+'</span></button>';
+  }).join('');
+  var inner='<div class="ex-header">'
+    +'<span class="ex-type-badge">Choix multiple</span>'
+    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
+    +'</div>'
+    +'<div class="ex-prompt">Choisis la bonne réponse</div>'
+    +(sentence?'<div class="ex-sentence" style="font-size:18px">'+escHtml(sentence)+'</div>':'')
+    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
+    +'<div class="sit-choices">'+optionsHtml+'</div>';
+  ea.innerHTML=exWrap(inner);
+  attachMainBtn();
+}
+
+function pickMcq(idx){
+  if(_locked)return;
+  var btn=document.getElementById('mcqOpt'+idx);
+  if(!btn)return;
+  _mcqSelected=btn.getAttribute('data-val')||'';
+  var nodes=document.querySelectorAll('[id^="mcqOpt"]');
+  nodes.forEach(function(n){n.style.borderColor='rgba(139,114,245,.25)';n.style.background='var(--surface)';});
+  btn.style.borderColor='var(--accent)';
+  btn.style.background='rgba(232,197,71,.08)';
+}
+
+function checkMcq(){
+  if(_locked)return;
+  var card=S.cards[S.currentIndex];
+  if(!card)return;
+  if(!_mcqSelected){showToast('Choisis une option', 'info');return;}
+  _locked=true;
+  var ok=norm(_mcqSelected)===norm(card.correct||'');
+  if(ok)onCorrect(true);else onWrong(card.correct||'');
+  revealFeedback(ok, card.correct||'', card);
+}
+
+// ── FILL (exam) ──────────────────────────────────────────────
+function renderFill(card){
+  var lvl=card.level||getLvl();
+  var ea=document.getElementById('exerciseArea');
+  if(!ea)return;
+  _currentVerifier=checkFill;
+  _locked=false;
+  var before=card.before||'';
+  var after=card.after||'';
+  if((!before&&!after) && card.sentence && card.correct){
+    var i=card.sentence.toLowerCase().indexOf(String(card.correct).toLowerCase());
+    if(i>-1){before=card.sentence.slice(0,i).trim();after=card.sentence.slice(i+String(card.correct).length).trim();}
+  }
+  var inner='<div class="ex-header">'
+    +'<span class="ex-type-badge">Texte à trous</span>'
+    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
+    +'</div>'
+    +'<div class="ex-prompt">Complète la phrase</div>'
+    +'<div class="ex-sentence" style="font-size:18px">'+escHtml((before?before+' ':'')+'____'+(after?' '+after:''))+'</div>'
+    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
+    +'<input type="text" class="translation-input" id="fillInput" placeholder="Mot manquant…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>';
+  ea.innerHTML=exWrap(inner);
+  attachMainBtn();
+  var inp=document.getElementById('fillInput');
+  if(inp){inp.addEventListener('keydown', function(e){if(e.key==='Enter'&&!_locked)checkFill();});}
+}
+
+function checkFill(){
+  if(_locked)return;
+  var inp=document.getElementById('fillInput');
+  var card=S.cards[S.currentIndex];
+  if(!inp||!card)return;
+  var answer=inp.value.trim();
+  if(!answer){showToast('Écris le mot manquant', 'info');return;}
+  _locked=true;
+  var ok=norm(answer)===norm(card.correct||'');
+  inp.classList.add(ok?'correct-input':'wrong-input');
+  if(ok)onCorrect(true);else onWrong(card.correct||'');
+  revealFeedback(ok, card.correct||'', card);
+}
+
 // ── CONJUGAISON ─────────────────────────────────────────────
 function renderConjugaison(card){
   var lvl = card.level || getLvl();
@@ -1923,7 +2126,19 @@ function renderSrsBanner(){
     +'</div>';
 }
 
+function syncLevelByMastery(){
+  var levels=LEVELS();
+  var changed=false;
+  while(S.levelIndex<levels.length-1){
+    var cur=levels[S.levelIndex];
+    var th=LEVEL_THRESHOLDS()[cur]||999999;
+    if(S.totalMastered>=th){S.levelIndex++;changed=true;}else break;
+  }
+  if(changed&&S.decksOnLevel<0)S.decksOnLevel=0;
+}
+
 function updateProgress(){
+  syncLevelByMastery();
   var th=LEVEL_THRESHOLDS()[getLvl()];
   var lvlPct=Math.min(100,(S.totalMastered/th)*100);
   var levelFill=document.getElementById('levelFill');
@@ -2140,7 +2355,10 @@ function launchExam(type){
 
   // Exam prompt — same strict schema as generateCards, no vocab type
   var _ecfg=getLangCfg();
-  var systemPrompt='Tu es un examinateur '+_ecfg.targetLang+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. ATTENTION CRITIQUE : toutes les phrases, mots et exemples dans les champs "sentence", "sentence_es", "before", "after", "blank", "correct", "distractors", "feedback_example" doivent etre EXCLUSIVEMENT en '+_ecfg.targetLang+'. Les seuls champs en français sont : prompt_fr, translation_fr, why_wrong, feedback_example_fr. Genere un examen de niveau '+getLvl()+' en '+_ecfg.targetLang+'.';
+  var examRegInstr=getRegisterProgressiveInstr(_lang,lvl,true);
+  var seenWords=getSeenWordsForExam(28);
+  var seenWordsLine=seenWords.length?'Utilise prioritairement le vocabulaire déjà vu par l\'utilisateur: '+seenWords.join(', ')+'. Au moins 60% des cartes doivent contenir au moins un de ces mots.':'';
+  var systemPrompt='Tu es un examinateur '+_ecfg.targetLang+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. ATTENTION CRITIQUE : toutes les phrases, mots et exemples dans les champs "sentence", "sentence_es", "before", "after", "blank", "correct", "distractors", "feedback_example" doivent etre EXCLUSIVEMENT en '+_ecfg.targetLang+'. Les seuls champs en français sont : prompt_fr, translation_fr, why_wrong, feedback_example_fr. Genere un examen de niveau '+getLvl()+' en '+_ecfg.targetLang+'. '+examRegInstr+' '+seenWordsLine;
 
   // Exam distribution — only mcq/translate/fill (no vocab cards, harder)
   var examDist='';
@@ -2161,7 +2379,7 @@ function launchExam(type){
     ?(_lang==='en'?('VARIED TOPICS for '+lvl+': '+(lvl==='A1'?'greetings, numbers, colours, survival phrases, basic needs':lvl==='A2'?'shopping, travel, family, food, daily routines, basic idioms':'B1 topics: travel, directions, describing events, common phrasal verbs, everyday slang')):'Themes VARIES: voyage, transports, restaurant, hotel, tourisme, chiffres, couleurs, famille')
     :(_lang==='en'?('DEMANDING TOPICS for '+lvl+': '+(lvl==='B2'?'idioms, phrasal verbs, British vs American English, professional vocabulary, cultural references':lvl==='C1'?'advanced idioms, formal registers, business English, nuanced grammar, literature references':lvl==='C2'?'subtle register, irony, understatement, British cultural deep cuts, advanced collocations':'NATIVE LEVEL: slang etymology, internet language, Gen Z English, regional dialects, cultural humour, subtext')):'Themes VARIES et EXIGEANTS: sante, emotions, travail, administration, shopping, meteo, traditions espagnoles, conjugaison de verbes irreguliers');
 
-  var userPrompt='EXAMEN '+(isMid?'BLANC':'FINAL')+' niveau '+lvl+'.\n'+examDist+'\n'+themes+'.\nRESPECTE EXACTEMENT ces schemas JSON:\n'+schemaExam;
+  var userPrompt='EXAMEN '+(isMid?'BLANC':'FINAL')+' niveau '+lvl+'.\n'+examDist+'\n'+themes+'.\n'+(seenWordsLine?seenWordsLine+'\n':'')+'RESPECTE EXACTEMENT ces schemas JSON:\n'+schemaExam;
 
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
@@ -2193,6 +2411,7 @@ function launchExam(type){
       }
       return c;
     }).filter(function(c){return c&&c.type&&c.type!=='vocab';});
+    cards=prioritizeSeenWordsCards(cards,seenWords);
     if(!cards.length)throw new Error('Aucune carte générée');
     S.cards=shuffle(cards);
     S.currentIndex=0;S.mastered=0;S.unknown=0;S.streak=0;S.sessionXp=0;
@@ -2584,6 +2803,7 @@ var _sitConversation=[];  // [{role:'user'|'assistant', content}]
 var _sitExchangesDone=0;
 var _sitErrors=[];
 var _sitXpEarned=0;
+var _sitXpEarned=0;
 
 function setSitLevel(lvl){
   _sitLevel=lvl;
@@ -2752,6 +2972,7 @@ function showSitResult(){
   var inputArea=document.getElementById('sitInputArea');if(inputArea)inputArea.style.display='none';
   var result=document.getElementById('sitResult');if(!result)return;
   result.style.display='block';
+  var xpGain=_sitXpEarned;
   var errHtml=_sitErrors.length?_sitErrors.map(function(e){
     return'<div class="sit-err-item"><div class="sit-err-you">✗ '+escQ(e.user)+'</div><div class="sit-err-correct">'+escQ(e.correction)+'</div></div>';
   }).join(''):'<div style="color:var(--success);font-size:13px;font-family:var(--mono,monospace);padding:8px 0">✓ Aucune erreur !</div>';
