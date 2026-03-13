@@ -694,10 +694,11 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 
     <div class="section-title">Badges</div>
     <div class="badges-grid" id="badgesList"></div>
+    <div id="badgesSummary" style="font-size:11px;color:var(--muted);font-family:var(--mono,monospace);margin-top:8px"></div>
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.7 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v2.9.8 · ES + EN · SRS · Exams</div>
     <div style="height:6px"></div>
   </div>
 
@@ -860,15 +861,27 @@ const MASTERY_WEIGHTS={mastered:1,hard:0.7,review:0.4};
 
 const BADGES=[
   {id:'first',icon:'🃏',label:'Première carte',ok:function(s){return s.totalMastered>=1;}},
+  {id:'m25',icon:'📘',label:'25 maîtrisés',ok:function(s){return s.totalMastered>=25;}},
+  {id:'m50',icon:'🧠',label:'50 maîtrisés',ok:function(s){return s.totalMastered>=50;}},
+  {id:'m150',icon:'🧩',label:'150 maîtrisés',ok:function(s){return s.totalMastered>=150;}},
   {id:'streak5',icon:'🔥',label:'Série x5',ok:function(s){return s.bestStreak>=5;}},
   {id:'streak10',icon:'💥',label:'Série x10',ok:function(s){return s.bestStreak>=10;}},
+  {id:'streak20',icon:'🌋',label:'Série x20',ok:function(s){return s.bestStreak>=20;}},
+  {id:'xp100',icon:'⚡',label:'100 XP',ok:function(s){return s.xp>=100;}},
+  {id:'xp500',icon:'🚀',label:'500 XP',ok:function(s){return s.xp>=500;}},
+  {id:'xp1000',icon:'🌠',label:'1000 XP',ok:function(s){return s.xp>=1000;}},
+  {id:'sessions10',icon:'🗓️',label:'10 sessions',ok:function(s){return s.sessions>=10;}},
+  {id:'sessions30',icon:'📅',label:'30 sessions',ok:function(s){return s.sessions>=30;}},
+  {id:'decks10',icon:'📦',label:'10 decks',ok:function(s){return s.decksGenerated>=10;}},
+  {id:'decks30',icon:'🏗️',label:'30 decks',ok:function(s){return s.decksGenerated>=30;}},
+  {id:'acc70',icon:'🎯',label:'70% réussite',ok:function(s){return (s.totalAnsweredAllTime||0)>=20 && ((s.totalKnownAllTime||0)/(s.totalAnsweredAllTime||1))>=0.70;}},
+  {id:'acc85',icon:'🥇',label:'85% réussite',ok:function(s){return (s.totalAnsweredAllTime||0)>=40 && ((s.totalKnownAllTime||0)/(s.totalAnsweredAllTime||1))>=0.85;}},
   {id:'lvla2',icon:'🌿',label:'Niveau A2',ok:function(s){return s.levelIndex>=1;}},
   {id:'lvlb1',icon:'🌳',label:'Niveau B1',ok:function(s){return s.levelIndex>=2;}},
-  {id:'xp100',icon:'⚡',label:'100 XP',ok:function(s){return s.xp>=100;}},
-  {id:'m50',icon:'🧠',label:'50 maîtrisés',ok:function(s){return s.totalMastered>=50;}},
+  {id:'lvlb2',icon:'⭐',label:'Niveau B2',ok:function(s){return s.levelIndex>=3;}},
+  {id:'lvlc1',icon:'🏆',label:'Niveau C1',ok:function(s){return s.levelIndex>=4;}},
   {id:'lvlc2',icon:'💎',label:'Niveau C2',ok:function(s){return _lang==='en'&&s.levelIndex>=5;}},
   {id:'lvlc2plus',icon:'👑',label:'Native+',ok:function(s){return _lang==='en'&&s.levelIndex>=6;}},
-  {id:'xp500',icon:'🚀',label:'500 XP',ok:function(s){return s.xp>=500;}},
 ];
 
 // ============================================================
@@ -906,6 +919,7 @@ var S={
   examType:'',          // 'mid' or 'final'
   examScore:0,          // correct answers in current exam
   examTotal:0,          // total questions in current exam
+  recentCardKeys:[],    // recent generated card fingerprints (for diversity)
 };
 
 var _locked=false; // prevent double tap
@@ -1006,7 +1020,7 @@ function renderSitExamples(){
 }
 
 function getCurrentSaveKey(){return getLangCfg().saveKey;}
-var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','dailyDate','dailyStreak','dailyXp','srsDB'];
+var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','dailyDate','dailyStreak','dailyXp','srsDB','recentCardKeys'];
 
 function saveProgress(){
   try{
@@ -1028,7 +1042,7 @@ function loadProgress(){
 function resetProgress(){
   if(!confirm('Réinitialiser toute ta progression ? Irréversible.'))return;
   try{localStorage.removeItem(getCurrentSaveKey());}catch(e){}
-  SAVE_FIELDS.forEach(function(k){S[k]=k==='topicHistory'?[]:k==='glossaryDB'||k==='srsDB'?{}:0;});
+  SAVE_FIELDS.forEach(function(k){S[k]=k==='topicHistory'||k==='recentCardKeys'?[]:k==='glossaryDB'||k==='srsDB'?{}:0;});
   S.levelIndex=0;S.reviewQueue=[];S.isReviewMode=false;
   S.isExamMode=false;S.examType='';S.examScore=0;S.examTotal=0;
   updateStats();updateProgress();renderEmptyState();
@@ -1077,6 +1091,47 @@ function addXP(n){
   if(n>0){S.dailyXp+=n;}
   var xpEl=document.getElementById('xpDisplay');if(xpEl)xpEl.textContent=S.xp+' XP';
   updateDailyBar();
+}
+
+
+function cardDiversityKey(card){
+  if(!card)return '';
+  var type=String(card.type||'').toLowerCase();
+  var base='';
+  if(type==='vocab')base=card.front||card.word||card.term||'';
+  else if(type==='wordorder')base=(card.correct_order||[]).join(' ');
+  else if(type==='translate')base=card.sentence_es||card.sentence||'';
+  else if(type==='conjugaison')base=(card.infinitive||'')+' '+(card.correct||'');
+  else if(type==='mcq')base=(card.sentence||card.sentence_es||'')+' '+(card.correct||'');
+  else if(type==='fill')base=(card.before||'')+' __ '+(card.after||'')+' '+(card.correct||card.blank||'');
+  return type+'|'+norm(base).trim();
+}
+
+function applyDiversityFilter(cards){
+  var recentMap={};
+  (S.recentCardKeys||[]).forEach(function(k){recentMap[k]=1;});
+  var seenThisDeck={};
+  var unique=cards.filter(function(c){
+    var k=cardDiversityKey(c);
+    if(!k||seenThisDeck[k])return false;
+    seenThisDeck[k]=1;
+    return true;
+  });
+  var filtered=unique.filter(function(c){return !recentMap[cardDiversityKey(c)];});
+  if(filtered.length>=Math.ceil(unique.length*0.5))return filtered;
+  return unique;
+}
+
+function rememberRecentCards(cards){
+  var arr=(S.recentCardKeys||[]).slice();
+  cards.forEach(function(c){
+    var k=cardDiversityKey(c);
+    if(k)arr.push(k);
+  });
+  var seen={};
+  arr=arr.reverse().filter(function(k){if(seen[k])return false;seen[k]=1;return true;}).reverse();
+  if(arr.length>220)arr=arr.slice(arr.length-220);
+  S.recentCardKeys=arr;
 }
 
 function tryParseJSON(raw){
@@ -1164,7 +1219,9 @@ function generateCards(){
   schema+='translate:{"type":"translate","level":"'+lvl+'","sentence_es":"phrase complete en '+tgt+'","translation_fr":"traduction FR","alt_translations":["variante1"],"why_wrong":"point grammatical a retenir en français","feedback_example":"phrase en '+tgt+' similaire","feedback_example_fr":"traduction FR","glossary":[{"es":"mot","fr":"trad","type":"nom"}]}\n';
   schema+='conjugaison:{"type":"conjugaison","level":"'+lvl+'","infinitive":"verbe-infinitif","pronoun":"pronom","tense":"presente/preterito/futuro","tense_fr":"présent/passé/futur","correct":"forme-conjuguee","sentence_context":"phrase avec ___ a la place du verbe","sentence_context_fr":"traduction FR avec ___","why_wrong":"explication terminaison ou irregularite en français","feedback_example":"autre phrase avec ce verbe conjugue","feedback_example_fr":"traduction FR","glossary":[{"es":"verbe","fr":"trad","type":"verbe"}]}';
 
-  var userPrompt='Theme: "'+topic+'"\nNiveau: '+lvl+'\n'+dist+'\nRESPECTE EXACTEMENT ces schemas JSON:\n'+schema;
+  var avoid=(S.recentCardKeys||[]).slice(-30).map(function(k){return k.split('|').slice(1).join(' ').trim();}).filter(Boolean);
+  var avoidLine=avoid.length?'\nÉvite de réutiliser ces mots/phrases récents: '+avoid.join(', '):'';
+  var userPrompt='Theme: "'+topic+'"\nNiveau: '+lvl+'\n'+dist+'\nRESPECTE EXACTEMENT ces schemas JSON:\n'+schema+avoidLine;
 
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
@@ -1204,7 +1261,9 @@ function generateCards(){
   })
   .then(function(parsed){
     if(!parsed.cards||!parsed.cards.length)throw new Error('Aucune carte reçue');
-    S.cards=shuffle(parsed.cards);
+    var diversified=applyDiversityFilter(parsed.cards||[]);
+    S.cards=shuffle(diversified);
+    rememberRecentCards(S.cards);
     S.currentIndex=0;S.mastered=0;S.unknown=0;S.streak=0;
     S.isFlipped=false;S.sessionXp=0;S.reviewQueue=[];S.isReviewMode=false;
     _locked=false;
@@ -2342,7 +2401,10 @@ function renderProfile(){
   });
   renderProfileStats(_lang);
   renderGlobalCompare();
+  var earned=BADGES.filter(function(b){return b.ok(S);}).length;
   document.getElementById('badgesList').innerHTML=BADGES.map(function(b){return'<div class="badge '+(b.ok(S)?'earned':'locked')+'"><span class="badge-icon">'+b.icon+'</span>'+b.label+'</div>';}).join('');
+  var bs=document.getElementById('badgesSummary');
+  if(bs)bs.textContent='Badges débloqués : '+earned+' / '+BADGES.length+' · Continue tes sessions pour tout débloquer.';
 }
 
 // ============================================================
@@ -2450,11 +2512,14 @@ function checkTopicMastery(){
 var _qrCards=[];var _qrIdx=0;var _qrResults=[];
 
 function startQuickReview(){
-  var keys=Object.keys(S.glossaryDB);
+  var keys=Object.keys(S.glossaryDB||{});
   if(keys.length<1){showToast('Ajoute des mots au glossaire d\'abord !','info');return;}
   var pool=shuffle(keys).slice(0,10);
-  _qrCards=pool.map(function(k){return S.glossaryDB[k];});
+  _qrCards=pool.map(function(k){return S.glossaryDB[k]||{es:k,fr:'',type:'mot',level:getLvl()};}).filter(Boolean);
   _qrIdx=0;_qrResults=[];
+  switchView('learn');
+  var cs=document.getElementById('completionScreen');if(cs)cs.classList.remove('show');
+  var mc=document.getElementById('mainContent');if(mc)mc.style.display='';
   renderQuickReview();
 }
 
@@ -2518,6 +2583,7 @@ var _sitLevel='A1';
 var _sitConversation=[];  // [{role:'user'|'assistant', content}]
 var _sitExchangesDone=0;
 var _sitErrors=[];
+var _sitXpEarned=0;
 
 function setSitLevel(lvl){
   _sitLevel=lvl;
@@ -2597,7 +2663,7 @@ function resetSituationView(){
   var result=document.getElementById('sitResult');if(result)result.style.display='none';
   var inputArea=document.getElementById('sitInputArea');if(inputArea)inputArea.style.display='';
   var msgs=document.getElementById('sitMessages');if(msgs)msgs.innerHTML='';
-  _sitConversation=[];_sitExchangesDone=0;_sitErrors=[];
+  _sitConversation=[];_sitExchangesDone=0;_sitErrors=[];_sitXpEarned=0;
   updateSitProgress();
 }
 
@@ -2613,7 +2679,7 @@ function startSituation(){
   document.getElementById('sitChatHeader').innerHTML='<div class="sit-chat-title">'+escQ(sit)+'</div><div class="sit-chat-sub">Niveau '+_sitLevel+' · '+SIT_EXCHANGES+' échanges</div>';
   document.getElementById('sitMessages').innerHTML='';
   var sendBtn=document.getElementById('sitSendBtn');if(sendBtn)sendBtn.disabled=false;
-  _sitConversation=[];_sitExchangesDone=0;_sitErrors=[];
+  _sitConversation=[];_sitExchangesDone=0;_sitErrors=[];_sitXpEarned=0;
   updateSitProgress();
   var sysPrompt=getSitSystemPrompt(sit,_sitLevel);
   _sitConversation=[{role:'user',content:'[Commence la scène — premier message seulement, pas de CORRECTION]'}];
@@ -2642,7 +2708,11 @@ function sendSitMessage(){
   callSitAPI(key,sysPrompt,function(botText){
     removeSitTyping();
     var parts=parseSitResponse(botText);
-    if(parts.correction)_sitErrors.push({user:userText,correction:parts.correction});
+    var hasCorrection=!!(parts.correction&&parts.correction.trim());
+    if(hasCorrection)_sitErrors.push({user:userText,correction:parts.correction});
+    var turnXp=hasCorrection?5:10;
+    _sitXpEarned+=turnXp;
+    addXP(turnXp);saveProgress();
     appendSitMsg('bot',parts.reply,parts.correction||null,parts.vocab,parts.engage);
     _sitConversation.push({role:'assistant',content:botText});
     _sitExchangesDone++;updateSitProgress();
@@ -2685,10 +2755,9 @@ function showSitResult(){
   var errHtml=_sitErrors.length?_sitErrors.map(function(e){
     return'<div class="sit-err-item"><div class="sit-err-you">✗ '+escQ(e.user)+'</div><div class="sit-err-correct">'+escQ(e.correction)+'</div></div>';
   }).join(''):'<div style="color:var(--success);font-size:13px;font-family:var(--mono,monospace);padding:8px 0">✓ Aucune erreur !</div>';
-  var xpGain=Math.max(5,20-_sitErrors.length*2);
-  addXP(xpGain);saveProgress();
+  var xpGain=_sitXpEarned;
   result.innerHTML='<div class="sit-result-title">Conversation terminée !</div>'
-    +'<div class="sit-result-sub">'+SIT_EXCHANGES+' échanges · +'+xpGain+' XP</div>'
+    +'<div class="sit-result-sub">'+SIT_EXCHANGES+' échanges · +'+xpGain+' XP (10 XP réponse correcte, 5 XP avec correction)</div>'
     +'<div class="sit-result-errors">'+errHtml+'</div>'
     +'<button class="sit-restart-btn" onclick="resetSituationView()">↻ Nouvelle conversation</button>';
 }
