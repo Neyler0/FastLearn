@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>FastLearn</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Bricolage+Grotesque:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 96 96' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='96' height='96' rx='22' fill='%230f0a24'/%3E%3Crect x='22' y='18' width='48' height='62' rx='8' fill='%232a1f55' stroke='%235b3fd4' stroke-width='1.2' opacity='0.7' transform='rotate(-8 46 49)'/%3E%3Crect x='26' y='16' width='48' height='62' rx='8' fill='%232a1f55' stroke='%238b72f5' stroke-width='1.5'/%3E%3Ctext x='50' y='60' text-anchor='middle' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23e8c547'%3EF%3C/text%3E%3Crect x='34' y='68' width='32' height='2.5' rx='1.2' fill='%235b3fd4'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#0c0c0f;--surface:#13131a;--card-bg:#18181f;
@@ -22,7 +23,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 /* DAILY PROGRESS BAR */
 .daily-bar{position:sticky;top:0;z-index:50;background:rgba(12,12,15,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
 .daily-bar-inner{display:flex;align-items:center;justify-content:space-between}
-.daily-logo{font-family:'DM Serif Display',serif;font-size:17px;letter-spacing:-.3px;color:var(--text);line-height:1;white-space:nowrap}
+.daily-logo{display:flex;align-items:center;line-height:1}
 .daily-logo span{color:var(--accent);font-style:italic}
 /* LANGUAGE SWITCHER */
 .lang-switcher{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:3px;flex-shrink:0}
@@ -572,13 +573,127 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .sit-choice-btn:active{border-color:var(--accent);background:rgba(232,197,71,.08)}
 .sit-choice-letter{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(139,114,245,.2);border:1px solid rgba(139,114,245,.3);color:#8b72f5;font-size:11px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;font-weight:700}
 </style>
+
+/* ── Burger menu ── */
+.burger-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s}
+.burger-overlay.open{background:rgba(0,0,0,.55);pointer-events:all}
+.burger-panel{position:fixed;top:0;left:0;bottom:0;width:min(320px,88vw);z-index:201;background:var(--bg);border-right:1px solid var(--border);transform:translateX(-110%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:0}
+.burger-panel.open{transform:translateX(0)}
+.burger-header{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px)+18px) 20px 18px;border-bottom:1px solid var(--border)}
+.burger-app-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
+.burger-version{font-family:var(--mono,monospace);font-size:10px;color:var(--muted);margin-top:2px}
+.burger-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1}
+.burger-body{flex:1;overflow-y:auto;padding:20px}
+.burger-section{margin-bottom:28px}
+.burger-section-title{font-family:var(--mono,monospace);font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+.burger-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);margin-bottom:8px;cursor:pointer;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s}
+.burger-item:hover{border-color:var(--accent);background:rgba(232,197,71,.06)}
+.burger-item-icon{font-size:18px;width:28px;text-align:center}
+.burger-item-label{font-size:14px;font-weight:500}
+.burger-item-sub{font-size:11px;color:var(--muted);margin-top:1px;font-family:var(--mono,monospace)}
+.burger-eco-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(74,197,93,.12);border:1px solid rgba(74,197,93,.25);border-radius:20px;padding:3px 10px;font-size:11px;color:#4ac55d;font-family:var(--mono,monospace);margin-top:10px}
+/* ── Eco view ── */
+#view-eco{padding:20px 16px 100px}
+.eco-header{text-align:center;padding:28px 0 20px}
+.eco-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
+.eco-subtitle{font-size:13px;color:var(--muted);margin-top:6px;font-family:var(--mono,monospace)}
+.eco-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
+.eco-card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.eco-card-icon{font-size:20px}
+.eco-card-title{font-size:14px;font-weight:500;color:var(--text)}
+.eco-metric{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}
+.eco-metric:last-child{border-bottom:none}
+.eco-metric-label{font-size:13px;color:var(--muted)}
+.eco-metric-val{font-family:var(--mono,monospace);font-size:13px;color:var(--text);font-weight:500}
+.eco-metric-val.accent{color:var(--accent)}
+.eco-tip{background:rgba(74,197,93,.07);border:1px solid rgba(74,197,93,.2);border-radius:12px;padding:14px;margin-top:6px;font-size:13px;color:#4ac55d;line-height:1.6}
+.eco-note{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);text-align:center;margin-top:18px;line-height:1.7;opacity:.7}
+</style>
 </head>
 <body>
+
+<!-- ── BURGER OVERLAY + PANEL — outside app-shell, fixed positioning ── -->
+<div class="burger-overlay" id="burgerOverlay" onclick="closeBurger()"></div>
+<div class="burger-panel" id="burgerPanel">
+  <div class="burger-header">
+    <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;border-radius:8px;flex-shrink:0">
+      <rect width="96" height="96" rx="22" fill="#0f0a24"/>
+      <rect x="22" y="18" width="48" height="62" rx="8" fill="#2a1f55" stroke="#5b3fd4" stroke-width="1.2" opacity="0.7" transform="rotate(-8 46 49)"/>
+      <rect x="26" y="16" width="48" height="62" rx="8" fill="#2a1f55" stroke="#8b72f5" stroke-width="1.5"/>
+      <text x="50" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#e8c547">F</text>
+      <rect x="34" y="68" width="32" height="2.5" rx="1.2" fill="#5b3fd4"/>
+    </svg>
+    <div>
+      <div class="burger-app-name">FastLearn</div>
+      <div class="burger-version">v2.9.9 · Haiku 4.5</div>
+    </div>
+    <button class="burger-close" onclick="closeBurger()">×</button>
+  </div>
+  <div class="burger-body">
+
+    <div class="burger-section">
+      <div class="burger-section-title">Contact</div>
+      <a class="burger-item" href="mailto:aureli1.bore@gmail.com?subject=FastLearn — Message">
+        <span class="burger-item-icon">✉️</span>
+        <div>
+          <div class="burger-item-label">Envoyer un message</div>
+          <div class="burger-item-sub">aureli1.bore@gmail.com</div>
+        </div>
+      </a>
+      <a class="burger-item" href="https://mail.google.com/mail/?view=cm&to=aureli1.bore@gmail.com&su=FastLearn" target="_blank">
+        <span class="burger-item-icon">🔵</span>
+        <div>
+          <div class="burger-item-label">Ouvrir dans Gmail</div>
+          <div class="burger-item-sub">Navigateur web</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="burger-section">
+      <div class="burger-section-title">Impact & coûts</div>
+      <div class="burger-item" onclick="closeBurger();switchView('eco');" style="cursor:pointer">
+        <span class="burger-item-icon">🌿</span>
+        <div>
+          <div class="burger-item-label">Page éco-responsable</div>
+          <div class="burger-item-sub">Coûts API · CO₂ · Eau</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="burger-section">
+      <div class="burger-section-title">À propos</div>
+      <div class="burger-item" style="cursor:default">
+        <span class="burger-item-icon">🧠</span>
+        <div>
+          <div class="burger-item-label">Modèle IA</div>
+          <div class="burger-item-sub">claude-haiku-4-5-20251001</div>
+        </div>
+      </div>
+      <div class="burger-item" style="cursor:default">
+        <span class="burger-item-icon">💡</span>
+        <div>
+          <div class="burger-item-label">Développé par</div>
+          <div class="burger-item-sub">Aurélien Boré · 2025</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div class="app-shell">
 
   <div class="daily-bar">
     <div class="daily-bar-inner">
-      <div class="daily-logo">Fast<span>Learn</span></div>
+      <div class="daily-logo" onclick="openBurger()" style="cursor:pointer">
+        <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;display:block;border-radius:10px;">
+          <rect width="96" height="96" rx="22" fill="#0f0a24"/>
+          <rect x="22" y="18" width="48" height="62" rx="8" fill="#2a1f55" stroke="#5b3fd4" stroke-width="1.2" opacity="0.7" transform="rotate(-8 46 49)"/>
+          <rect x="26" y="16" width="48" height="62" rx="8" fill="#2a1f55" stroke="#8b72f5" stroke-width="1.5"/>
+          <text x="50" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#e8c547">F</text>
+          <rect x="34" y="68" width="32" height="2.5" rx="1.2" fill="#5b3fd4"/>
+        </svg>
+      </div>
       <div class="lang-switcher" style="margin-left:auto">
         <button class="lang-btn active" id="langBtn-es" onclick="switchLang('es')"><span class="flag">🇪🇸</span>ES</button>
         <button class="lang-btn" id="langBtn-en" onclick="switchLang('en')"><span class="flag">🇬🇧</span>EN</button>
@@ -730,6 +845,104 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
   </div>
 
 
+  <!-- ECO VIEW -->
+  <div class="view" id="view-eco">
+    <div class="eco-header">
+      <div class="eco-title">🌿 Impact & coûts</div>
+      <div class="eco-subtitle">Transparence sur l'empreinte de FastLearn</div>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-card-header">
+        <span class="eco-card-icon">💸</span>
+        <span class="eco-card-title">Coût API — Haiku 4.5</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Input tokens</span>
+        <span class="eco-metric-val accent">$1.00 / 1M tokens</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Output tokens</span>
+        <span class="eco-metric-val accent">$5.00 / 1M tokens</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Génération d'un deck (≈ 3 500 tokens)</span>
+        <span class="eco-metric-val">~$0.02</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Examen blanc (≈ 5 000 tokens)</span>
+        <span class="eco-metric-val">~$0.03</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Session conversation (8 échanges, ≈ 4 000 tokens)</span>
+        <span class="eco-metric-val">~$0.02</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Coût estimé pour 100 sessions</span>
+        <span class="eco-metric-val">~$2 – $3</span>
+      </div>
+      <div class="eco-tip">💡 Haiku 4.5 est le modèle le plus efficace d'Anthropic — 3× moins cher que Sonnet, pour des performances proches. Un bon choix économique et responsable.</div>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-card-header">
+        <span class="eco-card-icon">💧</span>
+        <span class="eco-card-title">Eau consommée</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Par requête (refroidissement data center)</span>
+        <span class="eco-metric-val">~5 – 15 ml</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Par génération de deck</span>
+        <span class="eco-metric-val">~10 – 30 ml</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Par session complète (deck + conversation)</span>
+        <span class="eco-metric-val">~30 – 80 ml</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Équivalent pour 100 sessions</span>
+        <span class="eco-metric-val">~3 – 8 litres</span>
+      </div>
+      <div class="eco-tip">💡 À titre de comparaison, une heure de streaming vidéo consomme ~8 litres d'eau. FastLearn reste très sobre pour une app d'apprentissage IA.</div>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-card-header">
+        <span class="eco-card-icon">🌍</span>
+        <span class="eco-card-title">CO₂ émis</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Par génération de deck</span>
+        <span class="eco-metric-val">~0.2 – 0.5 g CO₂</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Par session complète</span>
+        <span class="eco-metric-val">~0.5 – 1.5 g CO₂</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Pour 100 sessions</span>
+        <span class="eco-metric-val">~50 – 150 g CO₂</span>
+      </div>
+      <div class="eco-metric">
+        <span class="eco-metric-label">Équivalent</span>
+        <span class="eco-metric-val">~0.5 km en voiture</span>
+      </div>
+      <div class="eco-tip">💡 Un trajet Paris–Lyon en TGV émet ~3 000 g CO₂. 100 sessions FastLearn représentent moins de 5% de ce trajet. L'IA bien utilisée reste légère.</div>
+    </div>
+
+    <div class="eco-note">
+      Valeurs approximatives basées sur les estimations de consommation des data centers AWS us-east-1.<br>
+      Sources : ML CO₂ Impact, Patterson et al. 2022, Anthropic sustainability reports.<br>
+      Haiku 4.5 est entraîné et optimisé pour minimiser l'empreinte par inférence.
+    </div>
+
+    <div style="height:20px"></div>
+    <button class="reset-btn" style="background:var(--surface)" onclick="switchView('learn')">← Retour</button>
+    <div style="height:40px"></div>
+  </div>
+
   <!-- SITUATION VIEW -->
   <div class="view" id="view-situation">
     <div class="situation-header">
@@ -804,8 +1017,20 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 
 <script>
 // ============================================================
-// CONSTANTS
+// BURGER MENU
 // ============================================================
+function openBurger(){
+  document.getElementById('burgerPanel').classList.add('open');
+  document.getElementById('burgerOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeBurger(){
+  document.getElementById('burgerPanel').classList.remove('open');
+  document.getElementById('burgerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+
 // ── Spanish levels (A1→C1) ──
 const LEVELS_ES=['A1','A2','B1','B2','C1'];
 const LEVEL_DESCS_ES={A1:'Débutant — mots essentiels',A2:'Élémentaire — phrases simples',B1:'Intermédiaire — situations',B2:'Avancé — idiomes et nuances',C1:'Courant — registres culturels'};
@@ -1067,6 +1292,7 @@ function switchView(name){
   if(name==='profile')renderProfile();
   if(name==='glossary')renderGlossaryView();
   if(name==='situation'){resetSituationView();}
+  if(name==='eco'){/* static view */}
   if(name==='learn'){
     var compScreen=document.getElementById('completionScreen');
     var compVisible=compScreen&&compScreen.classList.contains('show');
