@@ -607,6 +607,56 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .eco-metric-val.accent{color:var(--accent)}
 .eco-tip{background:rgba(74,197,93,.07);border:1px solid rgba(74,197,93,.2);border-radius:12px;padding:14px;margin-top:6px;font-size:13px;color:#4ac55d;line-height:1.6}
 .eco-note{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);text-align:center;margin-top:18px;line-height:1.7;opacity:.7}
+
+/* ── PRONUNCIATION VIEW ── */
+.pron-header{text-align:center;padding:24px 0 16px}
+.pron-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px}
+.pron-sub{font-size:13px;color:var(--muted)}
+.pron-phrase-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;text-align:center}
+.pron-phrase-label{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.pron-phrase-text{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.4;color:var(--text);margin-bottom:10px}
+.pron-phonetic{font-size:13px;color:var(--accent);font-family:var(--mono,monospace);margin-bottom:8px}
+.pron-tips{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5}
+.pron-record-area{display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0}
+.pron-record-btn{width:80px;height:80px;border-radius:50%;border:none;background:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:28px;transition:transform .15s,box-shadow .15s;touch-action:manipulation}
+.pron-record-btn:active{transform:scale(.92)}
+.pron-record-btn.recording{background:#c0392b;animation:pron-pulse 1.5s ease-in-out infinite}
+.pron-record-btn.processing{background:var(--muted);cursor:default}
+@keyframes pron-pulse{0%,100%{box-shadow:0 0 0 8px rgba(232,93,93,.2),0 0 0 16px rgba(232,93,93,.08)}50%{box-shadow:0 0 0 12px rgba(232,93,93,.25),0 0 0 24px rgba(232,93,93,.1)}}
+.pron-record-label{font-size:12px;font-family:var(--mono,monospace);color:var(--muted);letter-spacing:1px;text-align:center}
+.pron-waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:36px}
+.pron-bar{width:4px;background:var(--danger);border-radius:4px;height:6px;opacity:.5}
+.pron-bar.active{opacity:.8;animation:pron-wave .8s ease-in-out infinite}
+.pron-bar:nth-child(2){animation-delay:.1s}.pron-bar:nth-child(3){animation-delay:.2s}.pron-bar:nth-child(4){animation-delay:.3s}.pron-bar:nth-child(5){animation-delay:.4s}.pron-bar:nth-child(6){animation-delay:.3s}.pron-bar:nth-child(7){animation-delay:.2s}.pron-bar:nth-child(8){animation-delay:.1s}
+@keyframes pron-wave{0%,100%{height:6px}50%{height:26px}}
+.pron-new-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:10px 20px;color:var(--muted);font-family:'Bricolage Grotesque',sans-serif;font-size:13px;cursor:pointer;touch-action:manipulation}
+.pron-new-btn:active{opacity:.7}
+.pron-no-support{background:rgba(232,197,71,.08);border:1px solid rgba(232,197,71,.2);border-radius:12px;padding:14px;font-size:13px;color:var(--accent);line-height:1.5;margin-bottom:16px;display:none}
+.pron-result{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.pron-score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.pron-score-num{font-family:'DM Serif Display',serif;font-size:48px;line-height:1}
+.pron-score-label{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.pron-score-badge{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700}
+.pron-score-badge.excellent{background:rgba(78,202,139,.15);color:var(--success)}
+.pron-score-badge.good{background:rgba(232,197,71,.15);color:var(--accent)}
+.pron-score-badge.poor{background:rgba(232,93,93,.15);color:var(--danger)}
+.pron-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.pron-metric{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.pron-metric-val{font-family:'DM Serif Display',serif;font-size:18px;line-height:1;margin-bottom:3px}
+.pron-metric-lbl{font-size:9px;font-family:var(--mono,monospace);letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.pron-analysis-section{margin-bottom:14px}
+.pron-section-title{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.pron-words-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pron-word-chip{padding:5px 10px;border-radius:100px;font-size:14px;font-weight:600}
+.pron-word-chip.ok{background:rgba(78,202,139,.15);color:var(--success)}
+.pron-word-chip.warn{background:rgba(232,197,71,.15);color:var(--accent)}
+.pron-word-chip.err{background:rgba(232,93,93,.15);color:var(--danger)}
+.pron-feedback-block{background:var(--card-bg);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.6;color:var(--text)}
+.pron-retry-row{display:flex;gap:10px}
+.pron-retry-btn{flex:1;background:var(--danger);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.pron-retry-btn:active{opacity:.8}
+.pron-next-btn{flex:1;background:var(--accent);color:#0c0c0f;border:none;border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.pron-next-btn:active{opacity:.8}
 </style>
 </head>
 <body>
@@ -987,6 +1037,49 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     </div>
   </div>
 
+  <!-- PRONUNCIATION VIEW -->
+  <div class="view" id="view-pronunciation">
+    <div class="pron-header">
+      <div class="pron-title">🎤 Prononciation</div>
+      <div class="pron-sub">Dis la phrase — j'analyse ton accent et ta prononciation</div>
+    </div>
+
+    <div class="pron-no-support" id="pronNoSupport">
+      ⚠️ Ton navigateur ne supporte pas la reconnaissance vocale. Utilise Chrome ou Safari pour cette fonctionnalité.
+    </div>
+
+    <div id="pronPhraseArea">
+      <div class="pron-phrase-card">
+        <div class="pron-phrase-label">À prononcer</div>
+        <div class="pron-phrase-text" id="pronPhraseText">—</div>
+        <div class="pron-phonetic" id="pronPhonetic"></div>
+        <div class="pron-tips" id="pronTips"></div>
+      </div>
+
+      <div class="pron-record-area">
+        <div class="pron-waveform" id="pronWaveform">
+          <div class="pron-bar"></div><div class="pron-bar"></div><div class="pron-bar"></div>
+          <div class="pron-bar"></div><div class="pron-bar"></div><div class="pron-bar"></div>
+          <div class="pron-bar"></div><div class="pron-bar"></div>
+        </div>
+        <button class="pron-record-btn" id="pronRecordBtn" onclick="togglePronRecording()">🎙️</button>
+        <div class="pron-record-label" id="pronRecordLabel">Appuie pour enregistrer</div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin-top:4px">
+        <button class="pron-new-btn" id="pronNewBtn" onclick="generatePronPhrase()">↻ Nouvelle phrase</button>
+      </div>
+    </div>
+
+    <div id="pronResultArea" style="display:none">
+      <div class="pron-result" id="pronResult"></div>
+      <div class="pron-retry-row">
+        <button class="pron-retry-btn" onclick="retryPronPhrase()">🎙️ Réessayer</button>
+        <button class="pron-next-btn" onclick="generatePronPhrase()">Nouvelle phrase →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- WORD DETAIL SHEET (modal) -->
   <div class="word-sheet-overlay" id="wordSheetOverlay" onclick="closeWordSheet()"></div>
   <div class="word-sheet" id="wordSheet">
@@ -1009,6 +1102,9 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
   </button>
   <button class="bottom-tab" id="btab-profile" onclick="switchView('profile')">
     <span class="bottom-tab-icon">👤</span><span class="bottom-tab-label">Profil</span>
+  </button>
+  <button class="bottom-tab" id="btab-pronunciation" onclick="switchView('pronunciation')">
+    <span class="bottom-tab-icon">🎤</span><span class="bottom-tab-label">Prononciation</span>
   </button>
 </nav>
 
@@ -1312,6 +1408,7 @@ function switchView(name){
   if(name==='glossary')renderGlossaryView();
   if(name==='situation'){resetSituationView();}
   if(name==='eco'){/* static view */}
+  if(name==='pronunciation'){initPronView();}
   if(name==='learn'){
     var compScreen=document.getElementById('completionScreen');
     var compVisible=compScreen&&compScreen.classList.contains('show');
@@ -3414,6 +3511,265 @@ function validateApiKey(key){
     if(savedKey===key){statusEl.textContent='✅';_apiValidated=true;}
     else statusEl.textContent='⚠️';
   });
+}
+
+// ============================================================
+// PRONUNCIATION FEATURE
+// ============================================================
+var PRON={
+  phrase:null,
+  isRecording:false,
+  isStopping:false,
+  mediaRecorder:null,
+  audioChunks:[],
+  audioBlob:null,
+  transcript:'',
+  transcriptConfidence:0,
+  recognition:null,
+  audioMetrics:null,
+};
+
+function _escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function initPronView(){
+  var micOk=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
+  if(!micOk){
+    document.getElementById('pronNoSupport').style.display='block';
+    document.getElementById('pronPhraseArea').style.display='none';
+    return;
+  }
+  if(!PRON.phrase){generatePronPhrase();}
+}
+
+async function generatePronPhrase(){
+  var key=getKey();
+  if(!key){showToast('🔑 Clé API manquante — va dans Profil','error');return;}
+  var newBtn=document.getElementById('pronNewBtn');
+  var phraseText=document.getElementById('pronPhraseText');
+  var phonetic=document.getElementById('pronPhonetic');
+  var tips=document.getElementById('pronTips');
+  if(newBtn)newBtn.disabled=true;
+  phraseText.textContent='…';phonetic.textContent='';tips.textContent='';
+  document.getElementById('pronResultArea').style.display='none';
+  document.getElementById('pronPhraseArea').style.display='block';
+  _resetPronBtn();
+  var lang=_lang==='en'?'English':'Spanish';
+  var lvl=getLvl();
+  var prompt='Generate a pronunciation exercise phrase for a French speaker learning '+lang+' at level '+lvl+'.\nReturn ONLY valid JSON:\n{"text":"phrase in '+lang+' (4-10 words, natural, commonly used)","phonetic":"simplified pronunciation using French-friendly notation e.g. [a-mee-go]","focus_sounds":"sounds hard for French speakers in this phrase (one short sentence in French)","tip":"one concrete pronunciation tip in French, max 25 words","level":"'+lvl+'"}\nReturn ONLY JSON, no markdown.';
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:250,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok)throw new Error('Erreur '+res.status);
+    var data=await res.json();
+    var raw=data.content.map(function(b){return b.text||'';}).join('');
+    var m=raw.match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('Format invalide');
+    var phrase=JSON.parse(m[0]);
+    PRON.phrase=phrase;
+    phraseText.textContent=phrase.text||'—';
+    phonetic.textContent=phrase.phonetic?'[ '+phrase.phonetic+' ]':'';
+    tips.textContent=phrase.tip||'';
+  }catch(e){
+    phraseText.textContent='—';
+    showToast('Erreur génération: '+e.message,'error');
+  }
+  if(newBtn)newBtn.disabled=false;
+}
+
+function _resetPronBtn(){
+  var btn=document.getElementById('pronRecordBtn');
+  var label=document.getElementById('pronRecordLabel');
+  var bars=document.querySelectorAll('.pron-bar');
+  if(btn){btn.classList.remove('recording','processing');btn.textContent='🎙️';btn.disabled=false;}
+  if(label)label.textContent='Appuie pour enregistrer';
+  bars.forEach(function(b){b.classList.remove('active');});
+  PRON.isRecording=false;PRON.isStopping=false;
+}
+
+async function togglePronRecording(){
+  if(PRON.isStopping)return;
+  if(PRON.isRecording){stopPronRecording();}
+  else{await startPronRecording();}
+}
+
+async function startPronRecording(){
+  if(!PRON.phrase){showToast('Génère d\'abord une phrase','error');return;}
+  var btn=document.getElementById('pronRecordBtn');
+  var label=document.getElementById('pronRecordLabel');
+  var bars=document.querySelectorAll('.pron-bar');
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    PRON.audioChunks=[];PRON.transcript='';PRON.transcriptConfidence=0;
+    var opts={};
+    if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))opts.mimeType='audio/webm;codecs=opus';
+    else if(MediaRecorder.isTypeSupported('audio/webm'))opts.mimeType='audio/webm';
+    PRON.mediaRecorder=new MediaRecorder(stream,opts);
+    PRON.mediaRecorder.ondataavailable=function(e){if(e.data.size>0)PRON.audioChunks.push(e.data);};
+    PRON.mediaRecorder.onstop=function(){
+      stream.getTracks().forEach(function(t){t.stop();});
+      PRON.audioBlob=new Blob(PRON.audioChunks,{type:PRON.mediaRecorder.mimeType||'audio/webm'});
+      _processPronRecording();
+    };
+    PRON.mediaRecorder.start(100);
+    PRON.isRecording=true;
+    _startSpeechRec();
+    btn.classList.add('recording');btn.textContent='⏹';
+    label.textContent='Enregistrement… (appuie pour arrêter)';
+    bars.forEach(function(b){b.classList.add('active');});
+    setTimeout(function(){if(PRON.isRecording)stopPronRecording();},12000);
+  }catch(e){
+    showToast('Microphone inaccessible: '+e.message,'error');
+  }
+}
+
+function _startSpeechRec(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  try{
+    PRON.recognition=new SR();
+    PRON.recognition.continuous=false;
+    PRON.recognition.interimResults=false;
+    PRON.recognition.lang=_lang==='en'?'en-US':'es-ES';
+    PRON.recognition.maxAlternatives=1;
+    PRON.recognition.onresult=function(ev){
+      if(ev.results&&ev.results.length>0){
+        PRON.transcript=ev.results[0][0].transcript||'';
+        PRON.transcriptConfidence=ev.results[0][0].confidence||0;
+      }
+    };
+    PRON.recognition.onerror=function(e){if(e.error!=='aborted')console.warn('SR:',e.error);};
+    PRON.recognition.start();
+  }catch(e){console.warn('SR init:',e);}
+}
+
+function stopPronRecording(){
+  if(!PRON.isRecording)return;
+  PRON.isStopping=true;
+  var btn=document.getElementById('pronRecordBtn');
+  var label=document.getElementById('pronRecordLabel');
+  btn.classList.remove('recording');btn.classList.add('processing');
+  btn.textContent='⏳';btn.disabled=true;
+  label.textContent='Analyse en cours…';
+  document.querySelectorAll('.pron-bar').forEach(function(b){b.classList.remove('active');});
+  if(PRON.recognition){try{PRON.recognition.stop();}catch(e){}}
+  if(PRON.mediaRecorder&&PRON.mediaRecorder.state!=='inactive')PRON.mediaRecorder.stop();
+  PRON.isRecording=false;
+}
+
+async function _analyzeAudioFeatures(blob){
+  try{
+    var ab=await blob.arrayBuffer();
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return null;
+    var ctx=new AC();
+    var buf=await ctx.decodeAudioData(ab);
+    ctx.close();
+    var ch=buf.getChannelData(0);
+    var sr=buf.sampleRate;
+    var dur=buf.duration;
+    var frameSize=Math.floor(sr*0.02);
+    var energies=[];
+    for(var i=0;i<ch.length;i+=frameSize){
+      var end=Math.min(i+frameSize,ch.length);
+      var rms=0;
+      for(var j=i;j<end;j++)rms+=ch[j]*ch[j];
+      energies.push(Math.sqrt(rms/(end-i)));
+    }
+    var THRESH=0.015;
+    var speechF=0,pauseCount=0,inSil=false,silLen=0;
+    for(var k=0;k<energies.length;k++){
+      if(energies[k]<THRESH){silLen++;inSil=true;}
+      else{if(inSil&&silLen>15)pauseCount++;silLen=0;inSil=false;speechF++;}
+    }
+    var speechDur=speechF*0.02;
+    var syllEst=Math.max(1,Math.round(speechDur*4));
+    var maxE=Math.max.apply(null,energies);
+    var avgE=energies.reduce(function(s,v){return s+v;},0)/energies.length;
+    return{
+      duration:dur.toFixed(1),
+      speechDuration:speechDur.toFixed(1),
+      pauseCount:pauseCount,
+      speechRate:(dur>0?(syllEst/dur).toFixed(1):0),
+      volumeConsistency:(maxE>0?(avgE/maxE*100).toFixed(0):0),
+      syllableEstimate:syllEst
+    };
+  }catch(e){console.warn('audio analysis:',e);return null;}
+}
+
+async function _processPronRecording(){
+  await new Promise(function(r){setTimeout(r,700);});
+  PRON.audioMetrics=await _analyzeAudioFeatures(PRON.audioBlob);
+  await _callPronAPI();
+}
+
+async function _callPronAPI(){
+  var key=getKey();
+  if(!key){showToast('🔑 Clé API manquante','error');_resetPronBtn();return;}
+  if(!PRON.phrase){_resetPronBtn();return;}
+  var lang=_lang==='en'?'anglais':'espagnol';
+  var target=PRON.phrase.text;
+  var transcript=PRON.transcript||'(non capté)';
+  var m=PRON.audioMetrics;
+  var metricsText=m?('\nDonnées audio mesurées directement sur l\'enregistrement:\n- Durée: '+m.duration+'s\n- Parole active: '+m.speechDuration+'s\n- Pauses (>300ms): '+m.pauseCount+'\n- Débit estimé: '+m.speechRate+' syllabes/sec\n- Cohérence volume: '+m.volumeConsistency+'%\n- Syllabes estimées: '+m.syllableEstimate):'';
+  var confText=PRON.transcriptConfidence>0?('\nConfiance reconnaissance vocale: '+Math.round(PRON.transcriptConfidence*100)+'%'):'';
+  var prompt='Tu es un expert phonétique. Un apprenant français prononce une phrase en '+lang+'.\n\nPHRASE CIBLE: "'+target+'"\nCE QUI A ÉTÉ ENTENDU (SpeechRecognition): "'+transcript+'"'+confText+metricsText+'\n\nDonne une analyse en JSON UNIQUEMENT:\n{"score":85,"grade":"Bien","words":[{"word":"mot","status":"ok|warn|err"}],"corrections":"erreurs et corrections en français (max 80 mots)","tip":"conseil concret en français (max 35 mots)","rhythm_comment":"commentaire sur le rythme/débit en français (max 25 mots)"}\n\nRègles:\n- score basé sur: mots reconnus correctement, débit naturel, pauses appropriées\n- status ok=bien prononcé, warn=approximatif, err=très incorrect ou absent\n- UNIQUEMENT du JSON valide, sans markdown';
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:450,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok)throw new Error('Erreur '+res.status);
+    var data=await res.json();
+    var raw=data.content.map(function(b){return b.text||'';}).join('');
+    var match=raw.match(/\{[\s\S]*\}/);
+    if(!match)throw new Error('Format invalide');
+    var result=JSON.parse(match[0]);
+    PRON.analysisResult=result;
+    _renderPronResult(result);
+  }catch(e){
+    showToast('Erreur analyse: '+e.message,'error');
+    _resetPronBtn();
+  }
+}
+
+function _renderPronResult(result){
+  var score=result.score||0;
+  var grade=result.grade||(score>=80?'Excellent':score>=60?'Bien':'À améliorer');
+  var gClass=score>=80?'excellent':score>=60?'good':'poor';
+  var m=PRON.audioMetrics;
+  var wordsHtml='';
+  if(result.words&&result.words.length){
+    wordsHtml=result.words.map(function(w){
+      var cls=w.status==='ok'?'ok':w.status==='warn'?'warn':'err';
+      var icon=w.status==='ok'?'':w.status==='warn'?' ⚠':' ✗';
+      return '<span class="pron-word-chip '+cls+'">'+_escHtml(w.word)+icon+'</span>';
+    }).join('');
+  }
+  var metricsHtml=m?('<div class="pron-metrics"><div class="pron-metric"><div class="pron-metric-val">'+m.duration+'s</div><div class="pron-metric-lbl">Durée</div></div><div class="pron-metric"><div class="pron-metric-val">'+m.speechRate+'</div><div class="pron-metric-lbl">Syl./sec</div></div><div class="pron-metric"><div class="pron-metric-val">'+m.pauseCount+'</div><div class="pron-metric-lbl">Pauses</div></div></div>'):'';
+  var transcriptHtml=PRON.transcript?('<div class="pron-section-title">Reconnu</div><div style="font-size:14px;color:var(--muted);font-style:italic;margin-bottom:14px;padding:8px 12px;background:var(--card-bg);border-radius:8px">"'+_escHtml(PRON.transcript)+'"</div>'):'';
+  var html='<div class="pron-score-row"><div><div class="pron-score-num">'+score+'</div><div class="pron-score-label">Score / 100</div></div><span class="pron-score-badge '+gClass+'">'+_escHtml(grade)+'</span></div>'+
+    metricsHtml+
+    (wordsHtml?'<div class="pron-analysis-section"><div class="pron-section-title">Mot par mot</div><div class="pron-words-row">'+wordsHtml+'</div></div>':'')+
+    transcriptHtml+
+    (result.corrections?'<div class="pron-section-title">Corrections</div><div class="pron-feedback-block">'+_escHtml(result.corrections)+'</div>':'')+
+    (result.tip?'<div class="pron-section-title">Conseil</div><div class="pron-feedback-block" style="border-color:var(--success)">'+_escHtml(result.tip)+'</div>':'')+
+    (result.rhythm_comment?'<div class="pron-section-title">Rythme</div><div class="pron-feedback-block" style="border-color:var(--b1)">'+_escHtml(result.rhythm_comment)+'</div>':'');
+  document.getElementById('pronResult').innerHTML=html;
+  document.getElementById('pronResultArea').style.display='block';
+  document.getElementById('pronPhraseArea').style.display='none';
+  _resetPronBtn();
+}
+
+function retryPronPhrase(){
+  document.getElementById('pronResultArea').style.display='none';
+  document.getElementById('pronPhraseArea').style.display='block';
+  _resetPronBtn();
 }
 
 function init(){
