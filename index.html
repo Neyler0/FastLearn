@@ -573,33 +573,43 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .sit-choice-btn:active{border-color:var(--accent);background:rgba(232,197,71,.08)}
 .sit-choice-letter{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(139,114,245,.2);border:1px solid rgba(139,114,245,.3);color:#8b72f5;font-size:11px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;font-weight:700}
 
-/* ── Burger menu ── */
-.burger-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s}
-.burger-overlay.open{background:rgba(0,0,0,.55);pointer-events:all}
-.burger-panel{position:fixed;top:0;left:0;bottom:0;width:min(320px,88vw);z-index:201;background:var(--bg);border-right:1px solid var(--border);transform:translateX(-110%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:0}
-.burger-panel.open{transform:translateX(0)}
-.burger-header{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px)+18px) 20px 18px;border-bottom:1px solid var(--border)}
-.burger-app-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
-.burger-version{font-family:var(--mono,monospace);font-size:10px;color:var(--muted);margin-top:2px}
-.burger-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1}
-.burger-body{flex:1;overflow-y:auto;padding:20px}
-.burger-section{margin-bottom:28px}
-.burger-section-title{font-family:var(--mono,monospace);font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
-.burger-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);margin-bottom:8px;cursor:pointer;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s}
-.burger-item:hover{border-color:var(--accent);background:rgba(232,197,71,.06)}
-.burger-item-icon{font-size:18px;width:28px;text-align:center}
-.burger-item-label{font-size:14px;font-weight:500}
-.burger-item-sub{font-size:11px;color:var(--muted);margin-top:1px;font-family:var(--mono,monospace)}
-.burger-eco-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(74,197,93,.12);border:1px solid rgba(74,197,93,.25);border-radius:20px;padding:3px 10px;font-size:11px;color:#4ac55d;font-family:var(--mono,monospace);margin-top:10px}
-/* ── Eco view ── */
-#view-eco{padding:20px 16px 100px}
-.eco-header{text-align:center;padding:28px 0 20px}
-.eco-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
-.eco-subtitle{font-size:13px;color:var(--muted);margin-top:6px;font-family:var(--mono,monospace)}
-.eco-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
-.eco-card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.eco-card-icon{font-size:20px}
-.eco-card-title{font-size:14px;font-weight:500;color:var(--text)}
+/* ÉCOUTE VIEW */
+.ecoute-mode-btn{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 8px;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;touch-action:manipulation;transition:all .2s}
+.ecoute-mode-btn.active{background:rgba(232,197,71,.12);border-color:rgba(232,197,71,.4);color:var(--accent)}
+.ecoute-card{background:var(--card-bg);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:22px 18px;margin-bottom:14px;text-align:center}
+.ecoute-phrase{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);line-height:1.3;margin-bottom:8px}
+.ecoute-translation{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:16px}
+.ecoute-play-btn{background:var(--accent);color:#0c0c0f;border:none;border-radius:50%;width:60px;height:60px;font-size:24px;cursor:pointer;touch-action:manipulation;transition:transform .15s,opacity .15s;display:inline-flex;align-items:center;justify-content:center}
+.ecoute-play-btn:active{transform:scale(.92);opacity:.8}
+.ecoute-play-btn.playing{background:var(--accent2);animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+.ecoute-actions{display:flex;gap:8px;margin-top:14px}
+.ecoute-repeat-btn{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;touch-action:manipulation}
+.ecoute-ok-btn{flex:2;background:rgba(78,202,139,.1);border:1px solid rgba(78,202,139,.3);border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:800;color:var(--success);cursor:pointer;touch-action:manipulation}
+.ecoute-counter{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;color:var(--muted);text-align:center;margin-bottom:12px;text-transform:uppercase}
+.dictee-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:16px;outline:none;-webkit-appearance:none;transition:border-color .2s;margin-top:14px}
+.dictee-input:focus{border-color:rgba(232,197,71,.4)}
+.dictee-word{display:inline-block;padding:2px 4px;border-radius:4px;margin:2px}
+.dictee-word.ok{background:rgba(78,202,139,.15);color:var(--success)}
+.dictee-word.ko{background:rgba(232,93,93,.15);color:var(--danger);text-decoration:line-through}
+.dictee-word.expected{background:rgba(78,202,139,.08);color:var(--success);border:1px solid rgba(78,202,139,.3)}
+.ecoute-prog{height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:12px}
+.ecoute-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s}
+/* BURGER MENU + ECO PANEL */
+.daily-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.burger-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:pointer;touch-action:manipulation}
+.burger-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:120;display:none}
+.menu-overlay.show{display:block}
+.burger-drawer{position:fixed;top:0;right:0;height:100%;width:min(86vw,360px);background:linear-gradient(180deg,#14141d 0%,#101018 100%);border-left:1px solid var(--border);z-index:130;transform:translateX(102%);transition:transform .22s ease;padding:18px 16px 24px;overflow-y:auto}
+.burger-drawer.show{transform:translateX(0)}
+.bm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.bm-title{font-family:'DM Serif Display',serif;font-size:24px}
+.bm-close{border:none;background:transparent;color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
+.bm-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 13px;margin-bottom:10px}
+.bm-label{font-size:10px;font-family:var(--mono,monospace);letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
+.bm-link{display:block;color:var(--text);text-decoration:none;font-size:14px;line-height:1.5;margin:4px 0}
+.bm-link.accent{color:var(--accent)}
 .eco-metric{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}
 .eco-metric:last-child{border-bottom:none}
 .eco-metric-label{font-size:13px;color:var(--muted)}
@@ -607,148 +617,48 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 .eco-metric-val.accent{color:var(--accent)}
 .eco-tip{background:rgba(74,197,93,.07);border:1px solid rgba(74,197,93,.2);border-radius:12px;padding:14px;margin-top:6px;font-size:13px;color:#4ac55d;line-height:1.6}
 .eco-note{font-size:11px;color:var(--muted);font-family:var(--mono,monospace);text-align:center;margin-top:18px;line-height:1.7;opacity:.7}
-
-/* ── PRONUNCIATION VIEW ── */
-.pron-header{text-align:center;padding:24px 0 16px}
-.pron-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px}
-.pron-sub{font-size:13px;color:var(--muted)}
-.pron-phrase-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;text-align:center}
-.pron-phrase-label{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.pron-phrase-text{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.4;color:var(--text);margin-bottom:10px}
-.pron-phonetic{font-size:13px;color:var(--accent);font-family:var(--mono,monospace);margin-bottom:8px}
-.pron-tips{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5}
-.pron-record-area{display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0}
-.pron-record-btn{width:80px;height:80px;border-radius:50%;border:none;background:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:28px;transition:transform .15s,box-shadow .15s;touch-action:manipulation}
-.pron-record-btn:active{transform:scale(.92)}
-.pron-record-btn.recording{background:#c0392b;animation:pron-pulse 1.5s ease-in-out infinite}
-.pron-record-btn.processing{background:var(--muted);cursor:default}
-@keyframes pron-pulse{0%,100%{box-shadow:0 0 0 8px rgba(232,93,93,.2),0 0 0 16px rgba(232,93,93,.08)}50%{box-shadow:0 0 0 12px rgba(232,93,93,.25),0 0 0 24px rgba(232,93,93,.1)}}
-.pron-record-label{font-size:12px;font-family:var(--mono,monospace);color:var(--muted);letter-spacing:1px;text-align:center}
-.pron-waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:36px}
-.pron-bar{width:4px;background:var(--danger);border-radius:4px;height:6px;opacity:.5}
-.pron-bar.active{opacity:.8;animation:pron-wave .8s ease-in-out infinite}
-.pron-bar:nth-child(2){animation-delay:.1s}.pron-bar:nth-child(3){animation-delay:.2s}.pron-bar:nth-child(4){animation-delay:.3s}.pron-bar:nth-child(5){animation-delay:.4s}.pron-bar:nth-child(6){animation-delay:.3s}.pron-bar:nth-child(7){animation-delay:.2s}.pron-bar:nth-child(8){animation-delay:.1s}
-@keyframes pron-wave{0%,100%{height:6px}50%{height:26px}}
-.pron-new-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:10px 20px;color:var(--muted);font-family:'Bricolage Grotesque',sans-serif;font-size:13px;cursor:pointer;touch-action:manipulation}
-.pron-new-btn:active{opacity:.7}
-.pron-no-support{background:rgba(232,197,71,.08);border:1px solid rgba(232,197,71,.2);border-radius:12px;padding:14px;font-size:13px;color:var(--accent);line-height:1.5;margin-bottom:16px;display:none}
-.pron-result{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
-.pron-score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.pron-score-num{font-family:'DM Serif Display',serif;font-size:48px;line-height:1}
-.pron-score-label{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
-.pron-score-badge{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700}
-.pron-score-badge.excellent{background:rgba(78,202,139,.15);color:var(--success)}
-.pron-score-badge.good{background:rgba(232,197,71,.15);color:var(--accent)}
-.pron-score-badge.poor{background:rgba(232,93,93,.15);color:var(--danger)}
-.pron-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.pron-metric{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
-.pron-metric-val{font-family:'DM Serif Display',serif;font-size:18px;line-height:1;margin-bottom:3px}
-.pron-metric-lbl{font-size:9px;font-family:var(--mono,monospace);letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
-.pron-analysis-section{margin-bottom:14px}
-.pron-section-title{font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.pron-words-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.pron-word-chip{padding:5px 10px;border-radius:100px;font-size:14px;font-weight:600}
-.pron-word-chip.ok{background:rgba(78,202,139,.15);color:var(--success)}
-.pron-word-chip.warn{background:rgba(232,197,71,.15);color:var(--accent)}
-.pron-word-chip.err{background:rgba(232,93,93,.15);color:var(--danger)}
-.pron-feedback-block{background:var(--card-bg);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.6;color:var(--text)}
-.pron-retry-row{display:flex;gap:10px}
-.pron-retry-btn{flex:1;background:var(--danger);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
-.pron-retry-btn:active{opacity:.8}
-.pron-next-btn{flex:1;background:var(--accent);color:#0c0c0f;border:none;border-radius:12px;padding:14px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
-.pron-next-btn:active{opacity:.8}
+.eco-page{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
 </style>
 </head>
 <body>
-
-<!-- ── BURGER OVERLAY + PANEL — outside app-shell, fixed positioning ── -->
-<div class="burger-overlay" id="burgerOverlay" onclick="closeBurger()"></div>
-<div class="burger-panel" id="burgerPanel">
-  <div class="burger-header">
-    <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;border-radius:8px;flex-shrink:0">
-      <rect width="96" height="96" rx="22" fill="#0f0a24"/>
-      <rect x="22" y="18" width="48" height="62" rx="8" fill="#2a1f55" stroke="#5b3fd4" stroke-width="1.2" opacity="0.7" transform="rotate(-8 46 49)"/>
-      <rect x="26" y="16" width="48" height="62" rx="8" fill="#2a1f55" stroke="#8b72f5" stroke-width="1.5"/>
-      <text x="50" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#e8c547">F</text>
-      <rect x="34" y="68" width="32" height="2.5" rx="1.2" fill="#5b3fd4"/>
-    </svg>
-    <div>
-      <div class="burger-app-name">FastLearn</div>
-      <div class="burger-version">v3.0.1 · Haiku 4.5</div>
-    </div>
-    <button class="burger-close" onclick="closeBurger()">×</button>
-  </div>
-  <div class="burger-body">
-
-    <div class="burger-section">
-      <div class="burger-section-title">Contact</div>
-      <a class="burger-item" href="mailto:aureli1.bore@gmail.com?subject=FastLearn — Message">
-        <span class="burger-item-icon">✉️</span>
-        <div>
-          <div class="burger-item-label">Envoyer un message</div>
-          <div class="burger-item-sub">aureli1.bore@gmail.com</div>
-        </div>
-      </a>
-      <a class="burger-item" href="https://mail.google.com/mail/?view=cm&to=aureli1.bore@gmail.com&su=FastLearn" target="_blank">
-        <span class="burger-item-icon">🔵</span>
-        <div>
-          <div class="burger-item-label">Ouvrir dans Gmail</div>
-          <div class="burger-item-sub">Navigateur web</div>
-        </div>
-      </a>
-    </div>
-
-    <div class="burger-section">
-      <div class="burger-section-title">Impact & coûts</div>
-      <div class="burger-item" onclick="closeBurger();switchView('eco');" style="cursor:pointer">
-        <span class="burger-item-icon">🌿</span>
-        <div>
-          <div class="burger-item-label">Page éco-responsable</div>
-          <div class="burger-item-sub">Coûts API · CO₂ · Eau</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="burger-section">
-      <div class="burger-section-title">À propos</div>
-      <div class="burger-item" style="cursor:default">
-        <span class="burger-item-icon">🧠</span>
-        <div>
-          <div class="burger-item-label">Modèle IA</div>
-          <div class="burger-item-sub">claude-haiku-4-5-20251001</div>
-        </div>
-      </div>
-      <div class="burger-item" style="cursor:default">
-        <span class="burger-item-icon">💡</span>
-        <div>
-          <div class="burger-item-label">Développé par</div>
-          <div class="burger-item-sub">Aurélien Boré · 2025</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 <div class="app-shell">
 
   <div class="daily-bar">
     <div class="daily-bar-inner">
-      <div class="daily-logo" onclick="openBurger()" style="cursor:pointer">
-        <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;display:block;border-radius:10px;">
-          <rect width="96" height="96" rx="22" fill="#0f0a24"/>
-          <rect x="22" y="18" width="48" height="62" rx="8" fill="#2a1f55" stroke="#5b3fd4" stroke-width="1.2" opacity="0.7" transform="rotate(-8 46 49)"/>
-          <rect x="26" y="16" width="48" height="62" rx="8" fill="#2a1f55" stroke="#8b72f5" stroke-width="1.5"/>
-          <text x="50" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#e8c547">F</text>
-          <rect x="34" y="68" width="32" height="2.5" rx="1.2" fill="#5b3fd4"/>
-        </svg>
-      </div>
-      <div class="lang-switcher" style="margin-left:auto">
-        <button class="lang-btn active" id="langBtn-es" onclick="switchLang('es')"><span class="flag">🇪🇸</span>ES</button>
-        <button class="lang-btn" id="langBtn-en" onclick="switchLang('en')"><span class="flag">🇬🇧</span>EN</button>
+      <div class="daily-logo">Fast<span>Learn</span></div>
+      <div class="daily-actions">
+        <button class="burger-btn" id="burgerBtn" onclick="toggleBurgerMenu()" aria-label="Menu">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="langBtn-es" onclick="switchLang('es')"><span class="flag">🇪🇸</span>ES</button>
+          <button class="lang-btn" id="langBtn-en" onclick="switchLang('en')"><span class="flag">🇬🇧</span>EN</button>
+        </div>
       </div>
     </div>
   </div>
+
+
+  <div class="menu-overlay" id="menuOverlay" onclick="closeBurgerMenu()"></div>
+  <aside class="burger-drawer" id="burgerDrawer" aria-hidden="true">
+    <div class="bm-head"><div class="bm-title">FastLearn</div><button class="bm-close" onclick="closeBurgerMenu()">×</button></div>
+    <div class="bm-card">
+      <div class="bm-label">Contact</div>
+      <a class="bm-link accent" href="/cdn-cgi/l/email-protection#98f9edeafdf4f1a9b6faf7eafdd8fff5f9f1f4b6fbf7f5a7ebedfaf2fdfbeca5def9ebecd4fdf9eaf6bdaaa8b5bdaaa8dbf7f6ecf9fbec">✉️ Envoyer un message</a>
+      <a class="bm-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=aureli1.bore@gmail.com" target="_blank" rel="noopener">🌐 Ouvrir dans Gmail (web)</a>
+    </div>
+    <div class="bm-card">
+      <div class="bm-label">Impact & coûts (approx.)</div>
+      <div class="eco-metric"><span class="eco-metric-label">Appels API</span><span class="eco-metric-val" id="ecoCalls">0</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Coût cumulé</span><span class="eco-metric-val accent" id="ecoCost">$0.0000</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Eau estimée</span><span class="eco-metric-val" id="ecoWater">0 ml</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">CO₂ estimé</span><span class="eco-metric-val" id="ecoCo2">0 g</span></div>
+      <div class="eco-tip">Modèle: Claude Haiku 4.5. Estimation pédagogique (ordres de grandeur), pas une mesure certifiée.</div>
+      <a class="bm-link accent" href="#" onclick="openEcoPage();return false;">🌿 Ouvrir la page éco-responsable</a>
+    </div>
+    <div class="eco-note">v2.9.9 · Haiku 4.5</div>
+  </aside>
+
 
   <!-- LEARN VIEW -->
   <div class="view active" id="view-learn">
@@ -862,7 +772,7 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     <div class="section-title" style="margin-top:20px">Données</div>
     <button class="reset-btn" onclick="resetProgress()">🗑 Réinitialiser la progression</button>
     <div style="height:16px"></div>
-    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v3.0.1 · ES + EN · SRS · Exams</div>
+    <div style="text-align:center;font-size:10px;font-family:var(--mono,monospace);color:var(--muted);opacity:.4;letter-spacing:1px">FastLearn v3.0.0 · ES + EN · SRS · Écoute</div>
     <div style="height:6px"></div>
   </div>
 
@@ -896,100 +806,20 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
 
   <!-- ECO VIEW -->
   <div class="view" id="view-eco">
-    <div class="eco-header">
-      <div class="eco-title">🌿 Impact & coûts</div>
-      <div class="eco-subtitle">Transparence sur l'empreinte de FastLearn</div>
+    <div class="section-title">🌿 Page éco-responsable</div>
+    <div class="eco-page">
+      <div class="bm-label">Contact rapide</div>
+      <a class="bm-link accent" href="/cdn-cgi/l/email-protection#6f0e1a1d0a03065e410d001d0a2f08020e0603410c0002501c1a0d050a0c1b52290e1c1b230a0e1d014a5d5f424a5d5f2c00011b0e0c1b">✉️ <span class="__cf_email__" data-cfemail="7514000710191c445b171a0710351218141c195b161a18">[email&#160;protected]</span></a>
+      <div class="bm-label" style="margin-top:14px">Impact API (approx.)</div>
+      <div class="eco-metric"><span class="eco-metric-label">Appels API</span><span class="eco-metric-val" id="ecoCallsPage">0</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Tokens entrée</span><span class="eco-metric-val" id="ecoInPage">0</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Tokens sortie</span><span class="eco-metric-val" id="ecoOutPage">0</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Coût total estimé</span><span class="eco-metric-val accent" id="ecoCostPage">$0.0000</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">Eau estimée</span><span class="eco-metric-val" id="ecoWaterPage">0 ml</span></div>
+      <div class="eco-metric"><span class="eco-metric-label">CO₂ estimé</span><span class="eco-metric-val" id="ecoCo2Page">0 g</span></div>
+      <div class="eco-tip">Réduction d'impact : prompt clair, génération ciblée, révision sans regénérer inutilement.</div>
+      <button class="topic-cta-btn" style="margin-top:12px;width:100%" onclick="switchView('learn')">← Retour</button>
     </div>
-
-    <div class="eco-card">
-      <div class="eco-card-header">
-        <span class="eco-card-icon">💸</span>
-        <span class="eco-card-title">Coût API — Haiku 4.5</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Input tokens</span>
-        <span class="eco-metric-val accent">$1.00 / 1M tokens</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Output tokens</span>
-        <span class="eco-metric-val accent">$5.00 / 1M tokens</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Génération d'un deck (≈ 3 500 tokens)</span>
-        <span class="eco-metric-val">~$0.02</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Examen blanc (≈ 5 000 tokens)</span>
-        <span class="eco-metric-val">~$0.03</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Session conversation (8 échanges, ≈ 4 000 tokens)</span>
-        <span class="eco-metric-val">~$0.02</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Coût estimé pour 100 sessions</span>
-        <span class="eco-metric-val">~$2 – $3</span>
-      </div>
-      <div class="eco-tip">💡 Haiku 4.5 est le modèle le plus efficace d'Anthropic — 3× moins cher que Sonnet, pour des performances proches. Un bon choix économique et responsable.</div>
-    </div>
-
-    <div class="eco-card">
-      <div class="eco-card-header">
-        <span class="eco-card-icon">💧</span>
-        <span class="eco-card-title">Eau consommée</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Par requête (refroidissement data center)</span>
-        <span class="eco-metric-val">~5 – 15 ml</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Par génération de deck</span>
-        <span class="eco-metric-val">~10 – 30 ml</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Par session complète (deck + conversation)</span>
-        <span class="eco-metric-val">~30 – 80 ml</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Équivalent pour 100 sessions</span>
-        <span class="eco-metric-val">~3 – 8 litres</span>
-      </div>
-      <div class="eco-tip">💡 À titre de comparaison, une heure de streaming vidéo consomme ~8 litres d'eau. FastLearn reste très sobre pour une app d'apprentissage IA.</div>
-    </div>
-
-    <div class="eco-card">
-      <div class="eco-card-header">
-        <span class="eco-card-icon">🌍</span>
-        <span class="eco-card-title">CO₂ émis</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Par génération de deck</span>
-        <span class="eco-metric-val">~0.2 – 0.5 g CO₂</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Par session complète</span>
-        <span class="eco-metric-val">~0.5 – 1.5 g CO₂</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Pour 100 sessions</span>
-        <span class="eco-metric-val">~50 – 150 g CO₂</span>
-      </div>
-      <div class="eco-metric">
-        <span class="eco-metric-label">Équivalent</span>
-        <span class="eco-metric-val">~0.5 km en voiture</span>
-      </div>
-      <div class="eco-tip">💡 Un trajet Paris–Lyon en TGV émet ~3 000 g CO₂. 100 sessions FastLearn représentent moins de 5% de ce trajet. L'IA bien utilisée reste légère.</div>
-    </div>
-
-    <div class="eco-note">
-      Valeurs approximatives basées sur les estimations de consommation des data centers AWS us-east-1.<br>
-      Sources : ML CO₂ Impact, Patterson et al. 2022, Anthropic sustainability reports.<br>
-      Haiku 4.5 est entraîné et optimisé pour minimiser l'empreinte par inférence.
-    </div>
-
-    <div style="height:20px"></div>
-    <button class="reset-btn" style="background:var(--surface)" onclick="switchView('learn')">← Retour</button>
-    <div style="height:40px"></div>
   </div>
 
   <!-- SITUATION VIEW -->
@@ -1037,55 +867,41 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
     </div>
   </div>
 
-  <!-- PRONUNCIATION VIEW -->
-  <div class="view" id="view-pronunciation">
-    <div class="pron-header">
-      <div class="pron-title">🎤 Prononciation</div>
-      <div class="pron-sub">Dis la phrase — j'analyse ton accent et ta prononciation</div>
-    </div>
-
-    <div class="pron-no-support" id="pronNoSupport">
-      ⚠️ Ton navigateur ne supporte pas la reconnaissance vocale. Utilise Chrome ou Safari pour cette fonctionnalité.
-    </div>
-
-    <div id="pronPhraseArea">
-      <div class="pron-phrase-card">
-        <div class="pron-phrase-label">À prononcer</div>
-        <div class="pron-phrase-text" id="pronPhraseText">—</div>
-        <div class="pron-phonetic" id="pronPhonetic"></div>
-        <div class="pron-tips" id="pronTips"></div>
-      </div>
-
-      <div class="pron-record-area">
-        <div class="pron-waveform" id="pronWaveform">
-          <div class="pron-bar"></div><div class="pron-bar"></div><div class="pron-bar"></div>
-          <div class="pron-bar"></div><div class="pron-bar"></div><div class="pron-bar"></div>
-          <div class="pron-bar"></div><div class="pron-bar"></div>
-        </div>
-        <button class="pron-record-btn" id="pronRecordBtn" onclick="togglePronRecording()">🎙️</button>
-        <div class="pron-record-label" id="pronRecordLabel">Appuie pour enregistrer</div>
-      </div>
-
-      <div style="display:flex;justify-content:center;margin-top:4px">
-        <button class="pron-new-btn" id="pronNewBtn" onclick="generatePronPhrase()">↻ Nouvelle phrase</button>
-      </div>
-    </div>
-
-    <div id="pronResultArea" style="display:none">
-      <div class="pron-result" id="pronResult"></div>
-      <div class="pron-retry-row">
-        <button class="pron-retry-btn" onclick="retryPronPhrase()">🎙️ Réessayer</button>
-        <button class="pron-next-btn" onclick="generatePronPhrase()">Nouvelle phrase →</button>
-      </div>
-    </div>
-  </div>
-
   <!-- WORD DETAIL SHEET (modal) -->
   <div class="word-sheet-overlay" id="wordSheetOverlay" onclick="closeWordSheet()"></div>
   <div class="word-sheet" id="wordSheet">
     <div class="word-sheet-handle"></div>
     <div id="wordSheetContent"></div>
     <button class="word-sheet-close" onclick="closeWordSheet()">✕</button>
+  </div>
+
+  <!-- ÉCOUTE VIEW -->
+  <div class="view" id="view-ecoute">
+    <div style="margin-bottom:18px">
+      <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:4px">🎧 Écoute & Prononciation</div>
+      <div style="font-size:12px;color:var(--muted);font-family:var(--mono,monospace)">Écoute, répète, retiens</div>
+    </div>
+    <!-- Mode selector -->
+    <div style="display:flex;gap:8px;margin-bottom:18px">
+      <button class="ecoute-mode-btn active" id="ecouteModeShadow" onclick="setEcouteMode('shadow')">🔊 Shadowing</button>
+      <button class="ecoute-mode-btn" id="ecoute-mode-dict" onclick="setEcouteMode('dictee')">✍️ Dictée</button>
+    </div>
+    <!-- Setup -->
+    <div id="ecouteSetup">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">
+        <span style="font-size:10px;font-family:var(--mono,monospace);letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:9px">Thème</span>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="ecouteTopicInput" placeholder="voyage, restaurant, famille…" maxlength="80"
+            style="flex:1;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:13px 14px;color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:16px;outline:none;-webkit-appearance:none"/>
+          <button class="gen-btn" onclick="generateEcoute()">Générer →</button>
+        </div>
+      </div>
+      <div id="ecouteExplanation" style="background:rgba(232,197,71,.05);border:1px solid rgba(232,197,71,.15);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.6">
+        🔊 <strong style="color:var(--accent)">Shadowing</strong> — Écoute la phrase native, répète à voix haute, valide toi-même. Méthode n°1 pour acquérir l'accent naturellement.
+      </div>
+    </div>
+    <!-- Exercise area -->
+    <div id="ecouteExercise" style="display:none"></div>
   </div>
 
 </div>
@@ -1097,33 +913,68 @@ body::before{content:'';position:fixed;width:500px;height:500px;background:radia
   <button class="bottom-tab" id="btab-situation" onclick="switchView('situation')">
     <span class="bottom-tab-icon">💬</span><span class="bottom-tab-label">Conversation</span>
   </button>
+  <button class="bottom-tab" id="btab-ecoute" onclick="switchView('ecoute')">
+    <span class="bottom-tab-icon">🎧</span><span class="bottom-tab-label">Écoute</span>
+  </button>
   <button class="bottom-tab" id="btab-glossary" onclick="switchView('glossary')">
     <span class="bottom-tab-icon">📖</span><span class="bottom-tab-label">Glossaire</span>
   </button>
   <button class="bottom-tab" id="btab-profile" onclick="switchView('profile')">
     <span class="bottom-tab-icon">👤</span><span class="bottom-tab-label">Profil</span>
   </button>
-  <button class="bottom-tab" id="btab-pronunciation" onclick="switchView('pronunciation')">
-    <span class="bottom-tab-icon">🎤</span><span class="bottom-tab-label">Prononciation</span>
-  </button>
 </nav>
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================================
 // BURGER MENU
 // ============================================================
-function openBurger(){
-  document.getElementById('burgerPanel').classList.add('open');
-  document.getElementById('burgerOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
+function estimateTokens(txt){return Math.max(1,Math.ceil(String(txt||'').length/4));}
+
+function trackApiImpact(inputText,outputText){
+  var inTok=estimateTokens(inputText);
+  var outTok=estimateTokens(outputText);
+  var IN_COST_PER_1K=0.0010;
+  var OUT_COST_PER_1K=0.0050;
+  var WATER_ML_PER_1K=0.50;
+  var CO2_G_PER_1K=0.20;
+  S.apiCalls=(S.apiCalls||0)+1;
+  S.apiInputTokens=(S.apiInputTokens||0)+inTok;
+  S.apiOutputTokens=(S.apiOutputTokens||0)+outTok;
+  S.apiCostUSD=(S.apiCostUSD||0)+(inTok/1000)*IN_COST_PER_1K+(outTok/1000)*OUT_COST_PER_1K;
+  var totTok=inTok+outTok;
+  S.apiWaterMl=(S.apiWaterMl||0)+(totTok/1000)*WATER_ML_PER_1K;
+  S.apiCo2g=(S.apiCo2g||0)+(totTok/1000)*CO2_G_PER_1K;
+  renderEcoStats();
+  saveProgress();
 }
-function closeBurger(){
-  document.getElementById('burgerPanel').classList.remove('open');
-  document.getElementById('burgerOverlay').classList.remove('open');
-  document.body.style.overflow='';
+
+function renderEcoStats(){
+  var calls=S.apiCalls||0;
+  var cost='$'+(S.apiCostUSD||0).toFixed(4);
+  var water=(S.apiWaterMl||0).toFixed(1)+' ml';
+  var co2=(S.apiCo2g||0).toFixed(2)+' g';
+  var map={ecoCalls:calls,ecoCost:cost,ecoWater:water,ecoCo2:co2,ecoCallsPage:calls,ecoCostPage:cost,ecoWaterPage:water,ecoCo2Page:co2,ecoInPage:(S.apiInputTokens||0),ecoOutPage:(S.apiOutputTokens||0)};
+  Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=map[id];});
 }
+
+function toggleBurgerMenu(){
+  var d=document.getElementById('burgerDrawer');
+  var o=document.getElementById('menuOverlay');
+  if(!d||!o)return;
+  var open=d.classList.contains('show');
+  if(open){closeBurgerMenu();return;}
+  d.classList.add('show');o.classList.add('show');d.setAttribute('aria-hidden','false');
+  renderEcoStats();
+}
+function closeBurgerMenu(){
+  var d=document.getElementById('burgerDrawer');
+  var o=document.getElementById('menuOverlay');
+  if(d){d.classList.remove('show');d.setAttribute('aria-hidden','true');}
+  if(o)o.classList.remove('show');
+}
+function openEcoPage(){closeBurgerMenu();switchView('eco');renderEcoStats();}
 
 
 // ── Spanish levels (A1→C1) ──
@@ -1240,6 +1091,12 @@ var S={
   examScore:0,          // correct answers in current exam
   examTotal:0,          // total questions in current exam
   recentCardKeys:[],    // recent generated card fingerprints (for diversity)
+  apiCalls:0,
+  apiInputTokens:0,
+  apiOutputTokens:0,
+  apiCostUSD:0,
+  apiWaterMl:0,
+  apiCo2g:0,
 };
 
 var _locked=false; // prevent double tap
@@ -1340,25 +1197,7 @@ function renderSitExamples(){
 }
 
 function getCurrentSaveKey(){return getLangCfg().saveKey;}
-var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','srsDB','recentCardKeys'];
-var DAILY_FIELDS=['dailyDate','dailyStreak','dailyXp'];
-
-function saveDaily(){
-  try{
-    var d={};
-    DAILY_FIELDS.forEach(function(k){d[k]=S[k];});
-    localStorage.setItem('fl_daily',JSON.stringify(d));
-  }catch(e){}
-}
-
-function loadDaily(){
-  try{
-    var raw=localStorage.getItem('fl_daily');
-    if(!raw)return;
-    var d=JSON.parse(raw);
-    DAILY_FIELDS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});
-  }catch(e){}
-}
+var SAVE_FIELDS=['xp','levelIndex','totalMastered','bestStreak','decksGenerated','sessions','topicHistory','totalKnownAllTime','totalAnsweredAllTime','glossaryDB','decksOnLevel','midExamDone','finalExamDone','examLockout','dailyDate','dailyStreak','dailyXp','srsDB','recentCardKeys','apiCalls','apiInputTokens','apiOutputTokens','apiCostUSD','apiWaterMl','apiCo2g'];
 
 function saveProgress(){
   try{
@@ -1366,7 +1205,6 @@ function saveProgress(){
     SAVE_FIELDS.forEach(function(k){d[k]=S[k];});
     localStorage.setItem(getCurrentSaveKey(),JSON.stringify(d));
   }catch(e){console.warn('Save failed',e);}
-  saveDaily();
 }
 
 function loadProgress(){
@@ -1376,7 +1214,6 @@ function loadProgress(){
     var d=JSON.parse(raw);
     SAVE_FIELDS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});
   }catch(e){console.warn('Load failed',e);}
-  loadDaily();
 }
 
 function resetProgress(){
@@ -1407,8 +1244,13 @@ function switchView(name){
   if(name==='profile')renderProfile();
   if(name==='glossary')renderGlossaryView();
   if(name==='situation'){resetSituationView();}
+  if(name==='ecoute'){
+    // Ensure TTS voices are loaded
+    if(window.speechSynthesis&&window.speechSynthesis.getVoices().length===0){
+      window.speechSynthesis.onvoiceschanged=function(){};
+    }
+  }
   if(name==='eco'){/* static view */}
-  if(name==='pronunciation'){initPronView();}
   if(name==='learn'){
     var compScreen=document.getElementById('completionScreen');
     var compVisible=compScreen&&compScreen.classList.contains('show');
@@ -1476,6 +1318,46 @@ function rememberRecentCards(cards){
   S.recentCardKeys=arr;
 }
 
+
+function cardDiversityKey(card){
+  if(!card)return '';
+  var type=String(card.type||'').toLowerCase();
+  var base='';
+  if(type==='vocab')base=card.front||card.word||card.term||'';
+  else if(type==='wordorder')base=(card.correct_order||[]).join(' ');
+  else if(type==='translate')base=card.sentence_es||card.sentence||'';
+  else if(type==='conjugaison')base=(card.infinitive||'')+' '+(card.correct||'');
+  else if(type==='mcq')base=(card.sentence||card.sentence_es||'')+' '+(card.correct||'');
+  else if(type==='fill')base=(card.before||'')+' __ '+(card.after||'')+' '+(card.correct||card.blank||'');
+  return type+'|'+norm(base).trim();
+}
+
+function applyDiversityFilter(cards){
+  var recentMap={};
+  (S.recentCardKeys||[]).forEach(function(k){recentMap[k]=1;});
+  var seenThisDeck={};
+  var unique=cards.filter(function(c){
+    var k=cardDiversityKey(c);
+    if(!k||seenThisDeck[k])return false;
+    seenThisDeck[k]=1;
+    return true;
+  });
+  var filtered=unique.filter(function(c){return !recentMap[cardDiversityKey(c)];});
+  if(filtered.length>=Math.ceil(unique.length*0.5))return filtered;
+  return unique;
+}
+
+function rememberRecentCards(cards){
+  var arr=(S.recentCardKeys||[]).slice();
+  cards.forEach(function(c){
+    var k=cardDiversityKey(c);
+    if(k)arr.push(k);
+  });
+  var seen={};
+  arr=arr.reverse().filter(function(k){if(seen[k])return false;seen[k]=1;return true;}).reverse();
+  if(arr.length>220)arr=arr.slice(arr.length-220);
+  S.recentCardKeys=arr;
+}
 
 function normalizeWordOrderCard(c){
   if(!c||c.type!=='wordorder')return c;
@@ -1607,7 +1489,7 @@ function generateCards(){
   var glossInstructions=isBeginnerLvl
     ? 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj"}] avec les verbes conjugues, mots irreguliers ou peu courants que ce niveau ne connait probablement pas encore. A1: beaucoup de mots glossaires. A2: mots moyennement courants.'
     : 'Pour chaque carte ajoute "glossary":[{"es":"mot","fr":"trad","type":"verbe/nom/adj/expression"}] avec uniquement les mots rares, idiomatiques ou specifiques que ce niveau pourrait ne pas connaitre. B1/B2: quelques mots. C1: seulement les termes tres specifiques ou culturels.';
-  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+' '+regInstr+' Ajoute des explications pédagogiques claires en français.';
+  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown ni texte autour. Format strict: {"cards":[...]}. TOUTES les phrases cibles doivent etre en '+tgt+' — jamais dans une autre langue. Les explications et traductions sont en français. '+glossInstructions+' '+regInstr+' RÈGLES PÉDAGOGIQUES STRICTES: (1) Pour les exercices conjugaison: afficher TOUJOURS l\'infinitif + le pronom, l\'apprenant choisit la forme correcte parmi 4 terminaisons différentes — ne JAMAIS montrer la phrase complète avec le verbe déjà conjugué. (2) Pour wordorder: mélanger des mots et demander de reconstruire la phrase — pas de phrase déjà correcte visible. (3) Pour translate: donner une phrase en '+tgt+' à traduire en français OU une phrase française à traduire en '+tgt+'. Ajoute des explications pédagogiques claires en français.';
 
   var dist='';
   if(lvl==='A1')dist='Genere '+CARDS_PER_DECK+' cartes vocab.';
@@ -1644,6 +1526,7 @@ function generateCards(){
   .then(function(data){
     if(data.error)throw new Error(data.error.message);
     var raw=data.content.map(function(b){return b.text||'';}).join('');
+    trackApiImpact(systemPrompt+'\n'+userPrompt,raw);
     if(!raw)throw new Error('Réponse vide');
     var parsed=tryParseJSON(raw);
     if(!parsed){
@@ -1655,6 +1538,7 @@ function generateCards(){
         body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:3000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
       }).then(function(r2){return r2.json();}).then(function(d2){
         var raw2=d2.content.map(function(b){return b.text||'';}).join('');
+        trackApiImpact(systemPrompt+'\n'+userPrompt+'\nretry',raw2);
         var p2=tryParseJSON(raw2);
         if(!p2)throw new Error('Format invalide — réessaie');
         return p2;
@@ -2101,6 +1985,107 @@ function checkFill(){
   revealFeedback(ok,card.correct||'',card);
 }
 
+// ── MCQ (exam) ───────────────────────────────────────────────
+var _mcqSelected='';
+
+function getMcqOptions(card){
+  var opts=[];
+  if(Array.isArray(card.options))opts=card.options.slice();
+  if(Array.isArray(card.distractors))opts=opts.concat(card.distractors);
+  if(card.correct)opts.push(card.correct);
+  opts=opts.filter(Boolean).map(function(o){return String(o).trim();}).filter(Boolean);
+  var seen={};
+  opts=opts.filter(function(o){var k=norm(o);if(seen[k])return false;seen[k]=1;return true;});
+  return shuffleArr(opts);
+}
+
+function renderMcq(card){
+  var lvl=card.level||getLvl();
+  var ea=document.getElementById('exerciseArea');
+  if(!ea)return;
+  _currentVerifier=checkMcq;
+  _locked=false;
+  _mcqSelected='';
+  var sentence=card.sentence||card.sentence_es||'';
+  var options=getMcqOptions(card);
+  var optionsHtml=options.map(function(o,i){
+    return '<button class="sit-choice-btn" id="mcqOpt'+i+'" onclick="pickMcq('+i+')" data-val="'+escHtml(o)+'"><span class="sit-choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+escHtml(o)+'</span></button>';
+  }).join('');
+  var inner='<div class="ex-header">'
+    +'<span class="ex-type-badge">Choix multiple</span>'
+    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
+    +'</div>'
+    +'<div class="ex-prompt">Choisis la bonne réponse</div>'
+    +(sentence?'<div class="ex-sentence" style="font-size:18px">'+escHtml(sentence)+'</div>':'')
+    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
+    +'<div class="sit-choices">'+optionsHtml+'</div>';
+  ea.innerHTML=exWrap(inner);
+  attachMainBtn();
+}
+
+function pickMcq(idx){
+  if(_locked)return;
+  var btn=document.getElementById('mcqOpt'+idx);
+  if(!btn)return;
+  _mcqSelected=btn.getAttribute('data-val')||'';
+  var nodes=document.querySelectorAll('[id^="mcqOpt"]');
+  nodes.forEach(function(n){n.style.borderColor='rgba(139,114,245,.25)';n.style.background='var(--surface)';});
+  btn.style.borderColor='var(--accent)';
+  btn.style.background='rgba(232,197,71,.08)';
+}
+
+function checkMcq(){
+  if(_locked)return;
+  var card=S.cards[S.currentIndex];
+  if(!card)return;
+  if(!_mcqSelected){showToast('Choisis une option', 'info');return;}
+  _locked=true;
+  var ok=norm(_mcqSelected)===norm(card.correct||'');
+  if(ok)onCorrect(true);else onWrong(card.correct||'');
+  revealFeedback(ok, card.correct||'', card);
+}
+
+// ── FILL (exam) ──────────────────────────────────────────────
+function renderFill(card){
+  var lvl=card.level||getLvl();
+  var ea=document.getElementById('exerciseArea');
+  if(!ea)return;
+  _currentVerifier=checkFill;
+  _locked=false;
+  var before=card.before||'';
+  var after=card.after||'';
+  if((!before&&!after) && card.sentence && card.correct){
+    var i=card.sentence.toLowerCase().indexOf(String(card.correct).toLowerCase());
+    if(i>-1){before=card.sentence.slice(0,i).trim();after=card.sentence.slice(i+String(card.correct).length).trim();}
+  }
+  var inner='<div class="ex-header">'
+    +'<span class="ex-type-badge">Texte à trous</span>'
+    +'<span class="ex-level-tag level-'+lvl+'">'+lvl+'</span>'
+    +'</div>'
+    +'<div class="ex-prompt">Complète la phrase</div>'
+    +'<div class="ex-sentence" style="font-size:18px">'+escHtml((before?before+' ':'')+'____'+(after?' '+after:''))+'</div>'
+    +(card.prompt_fr?'<div class="ex-hint-fr">'+escHtml(card.prompt_fr)+'</div>':'')
+    +'<input type="text" class="translation-input" id="fillInput" placeholder="Mot manquant…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>';
+  ea.innerHTML=exWrap(inner);
+  attachMainBtn();
+  var inp=document.getElementById('fillInput');
+  if(inp){inp.addEventListener('keydown', function(e){if(e.key==='Enter'&&!_locked)checkFill();});}
+}
+
+function checkFill(){
+  if(_locked)return;
+  var inp=document.getElementById('fillInput');
+  var card=S.cards[S.currentIndex];
+  if(!inp||!card)return;
+  var answer=inp.value.trim();
+  if(!answer){showToast('Écris le mot manquant', 'info');return;}
+  _locked=true;
+  var ok=norm(answer)===norm(card.correct||'');
+  inp.classList.add(ok?'correct-input':'wrong-input');
+  if(ok)onCorrect(true);else onWrong(card.correct||'');
+  revealFeedback(ok, card.correct||'', card);
+}
+
 // ── CONJUGAISON ─────────────────────────────────────────────
 function renderConjugaison(card){
   var lvl = card.level || getLvl();
@@ -2364,7 +2349,7 @@ function updateDailyBar(){
     else if(S.dailyDate&&S.dailyDate!==today){S.dailyStreak=1;}
     else if(!S.dailyDate){S.dailyStreak=1;}
     S.dailyDate=today;S.dailyXp=0;
-    saveDaily();
+    saveProgress();
   }
   var pct=Math.min(100,(S.dailyXp/DAILY_GOAL_XP)*100);
   var fill=document.getElementById('dailyFill');
@@ -2594,13 +2579,8 @@ function launchExam(type){
   .then(function(data){
     if(data.error)throw new Error(data.error.message);
     var raw=data.content.map(function(b){return b.text||'';}).join('');
+    trackApiImpact(systemPrompt+'\n'+userPrompt,raw);
     if(!raw)throw new Error('Réponse vide');
-    var parsed=tryParseJSON(raw);
-    if(!parsed)throw new Error('Format invalide — réessaie');
-    var cards=(parsed.cards||[]).map(function(c){
-      if(!c||typeof c!=='object')return null;
-      if(!c.type){
-        if(c.before||c.blank||c.after)c.type='fill';
         else if(c.sentence_es&&c.translation_fr)c.type='translate';
         else if(c.sentence&&c.correct&&(c.distractors||c.options))c.type='mcq';
         else c.type='vocab';
@@ -2949,7 +2929,7 @@ function renderQuickReview(){
   if(_qrIdx>=_qrCards.length){
     var correct=_qrResults.filter(function(r){return r==='mastered';}).length;
     var pct=Math.round((correct/_qrCards.length)*100);
-    saveProgress();
+    addXP(correct*5);saveProgress();
     mc.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 12px;gap:16px"><div style="font-size:48px">⚡</div><div style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--accent)">Révision terminée !</div><div style="font-size:14px;color:var(--muted)">'+correct+'/'+_qrCards.length+' maîtrisés · '+pct+'%</div><div style="display:flex;flex-direction:column;gap:10px;width:100%"><button class="topic-cta-btn" onclick="startQuickReview()">↻ Relancer</button><button class="continue-same-deck-btn" onclick="renderEmptyState()">Retour</button></div></div>';
     return;
   }
@@ -2999,15 +2979,33 @@ function answerQR(result){
 // ============================================================
 // SITUATION MODE
 // ============================================================
+var _sitLevel='A1';
+var _sitConversation=[];  // [{role:'user'|'assistant', content}]
+var _sitExchangesDone=0;
+var _sitErrors=[];
+var _sitXpEarned=0;
+var _sitXpEarned=0;
+
+function setSitLevel(lvl){
+  _sitLevel=lvl;
+  document.querySelectorAll('.sit-lvl-pill').forEach(function(p){p.classList.remove('active');});
+  var pills=document.querySelectorAll('#sitLevelPills .sit-lvl-pill');
+  pills.forEach(function(p){if(p.textContent===lvl)p.classList.add('active');});
+}
+
+function setSitExample(el){
+  var ta=document.getElementById('sitInput');
+  if(ta)ta.value=el.textContent;
+}
+
 // ============================================================
-// SITUATION / CONVERSATION MODE
+// SITUATION / CONVERSATION MODE — version unique et définitive
 // ============================================================
 var _sitLevel='A1';
 var _sitScenario='';
 var _sitConversation=[];
 var _sitExchangesDone=0;
 var _sitErrors=[];
-var _sitXpEarned=0;
 
 function getSitSystemPrompt(sit,level){
   var cfg=getLangCfg();
@@ -3134,7 +3132,11 @@ function callSitAPI(key,sysPrompt,onSuccess,onError){
     body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,system:sysPrompt,messages:_sitConversation.slice()})
   })
   .then(function(r){if(!r.ok)throw new Error('Erreur '+r.status);return r.json();})
-  .then(function(d){onSuccess(d.content.map(function(b){return b.text||'';}).join('').trim());})
+  .then(function(d){
+    var out=d.content.map(function(b){return b.text||'';}).join('').trim();
+    trackApiImpact(sysPrompt+'\n'+JSON.stringify(_sitConversation.slice(-6)),out);
+    onSuccess(out);
+  })
   .catch(function(e){onError(e.message);});
 }
 
@@ -3159,11 +3161,22 @@ function showSitResult(){
   var errHtml=_sitErrors.length?_sitErrors.map(function(e){
     return'<div class="sit-err-item"><div class="sit-err-you">✗ '+escQ(e.user)+'</div><div class="sit-err-correct">'+escQ(e.correction)+'</div></div>';
   }).join(''):'<div style="color:var(--success);font-size:13px;font-family:var(--mono,monospace);padding:8px 0">✓ Aucune erreur !</div>';
+  var xpGain=_sitXpEarned;
   result.innerHTML='<div class="sit-result-title">Conversation terminée !</div>'
     +'<div class="sit-result-sub">'+SIT_EXCHANGES+' échanges · +'+xpGain+' XP (10 XP réponse correcte, 5 XP avec correction)</div>'
     +'<div class="sit-result-errors">'+errHtml+'</div>'
     +'<button class="sit-restart-btn" onclick="resetSituationView()">↻ Nouvelle conversation</button>';
 }
+
+function renderSitExamples(){
+  var cfg=getLangCfg();
+  var el=document.getElementById('sitExamplesWrap');
+  if(!el)return;
+  el.innerHTML=cfg.sitExamples.map(function(ex){
+    return '<button class="sit-example-chip" onclick="setSitExample(this)">'+ex+'</button>';
+  }).join('');
+}
+
 
 function appendSitMsg(role,text,correction,vocab,engage){
   var msgs=document.getElementById('sitMessages');if(!msgs)return;
@@ -3514,281 +3527,221 @@ function validateApiKey(key){
 }
 
 // ============================================================
-// PRONUNCIATION FEATURE
+// ÉCOUTE & PRONONCIATION — SHADOWING + DICTÉE
 // ============================================================
-var PRON={
-  phrase:null,
-  isRecording:false,
-  isStopping:false,
-  mediaRecorder:null,
-  audioChunks:[],
-  audioBlob:null,
-  transcript:'',
-  transcriptConfidence:0,
-  recognition:null,
-  audioMetrics:null,
-};
+var _ecouteMode='shadow'; // 'shadow' | 'dictee'
+var _ecouteCards=[];
+var _ecouteIdx=0;
+var _ecoutePlayCount=0;
+var _ecouteLang=''; // TTS lang code
 
-function _escHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function setEcouteMode(mode){
+  _ecouteMode=mode;
+  document.querySelectorAll('.ecoute-mode-btn').forEach(function(b){b.classList.remove('active');});
+  var btnId=mode==='shadow'?'ecouteModeShadow':'ecoute-mode-dict';
+  var btn=document.getElementById(btnId);if(btn)btn.classList.add('active');
+  var expl=document.getElementById('ecouteExplanation');
+  if(expl){
+    if(mode==='shadow'){
+      expl.innerHTML='🔊 <strong style="color:var(--accent)">Shadowing</strong> — Écoute la phrase native, répète à voix haute, valide toi-même. Méthode n°1 pour acquérir l\'accent naturellement.';
+    }else{
+      expl.innerHTML='✍️ <strong style="color:var(--accent)">Dictée</strong> — Écoute et écris ce que tu entends. Entraîne ta reconnaissance auditive et ton orthographe.';
+    }
+  }
+  // Reset if cards loaded
+  if(_ecouteCards.length>0){_ecouteIdx=0;renderEcouteCard();}
 }
 
-function initPronView(){
-  var micOk=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
-  if(!micOk){
-    document.getElementById('pronNoSupport').style.display='block';
-    document.getElementById('pronPhraseArea').style.display='none';
+function generateEcoute(){
+  var topic=(document.getElementById('ecouteTopicInput')||{}).value||'';
+  topic=topic.trim();
+  var key=getKey();
+  if(!key||key.length<10){showToast('🔑 Entre ta clé API','error');return;}
+  if(!topic){showToast('💬 Décris un thème','info');return;}
+
+  var setup=document.getElementById('ecouteSetup');
+  var area=document.getElementById('ecouteExercise');
+  if(area)area.innerHTML='<div class="loading-state" style="height:200px"><div class="loader"></div><div class="loading-text">Génération…</div></div>';
+  if(area)area.style.display='block';
+
+  var lvl=getLvl();
+  var cfg=getLangCfg();
+  var tgt=cfg.targetLang;
+  _ecouteLang=_lang==='en'?'en-GB':'es-ES';
+
+  var systemPrompt='Tu es un prof '+tgt+' expert. Reponds UNIQUEMENT en JSON valide sans markdown. Format: {"phrases":[...]}. Génère des phrases claires et naturelles en '+tgt+', adaptées au niveau '+lvl+'. Chaque phrase doit avoir une traduction française. Varie la longueur (5-12 mots).';
+  var userPrompt='Thème: "'+topic+'"\nNiveau: '+lvl+'\nGénère 8 phrases en '+tgt+' pour exercices de shadowing/dictée.\nFormat strict pour chaque:\n{"phrase":"phrase en '+tgt+'","translation_fr":"traduction FR","phonetic_tips":"1-2 sons difficiles à prononcer pour un francophone, ex: le ll espagnol, le r roulé…"}';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
+  })
+  .then(function(r){if(!r.ok)throw new Error('Erreur '+r.status);return r.json();})
+  .then(function(data){
+    trackApiImpact(systemPrompt+'\n'+userPrompt,data.content.map(function(b){return b.text||'';}).join(''));
+    var raw=data.content.map(function(b){return b.text||'';}).join('');
+    var parsed=tryParseJSON(raw);
+    if(!parsed||!parsed.phrases||!parsed.phrases.length)throw new Error('Format invalide');
+    _ecouteCards=parsed.phrases;
+    _ecouteIdx=0;
+    if(setup)setup.style.display='none';
+    renderEcouteCard();
+    showToast('🎧 '+_ecouteCards.length+' phrases générées','info');
+  })
+  .catch(function(e){
+    if(area)area.innerHTML='';
+    showToast('❌ '+e.message,'error');
+  });
+}
+
+function renderEcouteCard(){
+  var area=document.getElementById('ecouteExercise');
+  if(!area||!_ecouteCards.length)return;
+  if(_ecouteIdx>=_ecouteCards.length){
+    // All done
+    area.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 12px;gap:16px">'
+      +'<div style="font-size:52px">🎉</div>'
+      +'<div style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--accent)">Session terminée !</div>'
+      +'<div style="font-size:13px;color:var(--muted)">'+_ecouteCards.length+' phrases pratiquées</div>'
+      +'<button class="topic-cta-btn" onclick="restartEcoute()">↻ Recommencer</button>'
+      +'<button class="continue-same-deck-btn" onclick="newEcouteSession()">Nouveau thème</button>'
+      +'</div>';
     return;
   }
-  if(!PRON.phrase){generatePronPhrase();}
-}
+  _ecoutePlayCount=0;
+  var c=_ecouteCards[_ecouteIdx];
+  var pct=Math.round((_ecouteIdx/_ecouteCards.length)*100);
 
-async function generatePronPhrase(){
-  var key=getKey();
-  if(!key){showToast('🔑 Clé API manquante — va dans Profil','error');return;}
-  var newBtn=document.getElementById('pronNewBtn');
-  var phraseText=document.getElementById('pronPhraseText');
-  var phonetic=document.getElementById('pronPhonetic');
-  var tips=document.getElementById('pronTips');
-  if(newBtn)newBtn.disabled=true;
-  phraseText.textContent='…';phonetic.textContent='';tips.textContent='';
-  document.getElementById('pronResultArea').style.display='none';
-  document.getElementById('pronPhraseArea').style.display='block';
-  _resetPronBtn();
-  var lang=_lang==='en'?'English':'Spanish';
-  var lvl=getLvl();
-  var prompt='Generate a pronunciation exercise phrase for a French speaker learning '+lang+' at level '+lvl+'.\nReturn ONLY valid JSON:\n{"text":"phrase in '+lang+' (4-10 words, natural, commonly used)","phonetic":"simplified pronunciation using French-friendly notation e.g. [a-mee-go]","focus_sounds":"sounds hard for French speakers in this phrase (one short sentence in French)","tip":"one concrete pronunciation tip in French, max 25 words","level":"'+lvl+'"}\nReturn ONLY JSON, no markdown.';
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:250,messages:[{role:'user',content:prompt}]})
-    });
-    if(!res.ok)throw new Error('Erreur '+res.status);
-    var data=await res.json();
-    var raw=data.content.map(function(b){return b.text||'';}).join('');
-    var m=raw.match(/\{[\s\S]*\}/);
-    if(!m)throw new Error('Format invalide');
-    var phrase=JSON.parse(m[0]);
-    PRON.phrase=phrase;
-    phraseText.textContent=phrase.text||'—';
-    phonetic.textContent=phrase.phonetic?'[ '+phrase.phonetic+' ]':'';
-    tips.textContent=phrase.tip||'';
-  }catch(e){
-    phraseText.textContent='—';
-    showToast('Erreur génération: '+e.message,'error');
-  }
-  if(newBtn)newBtn.disabled=false;
-}
+  if(_ecouteMode==='shadow'){
+    area.innerHTML='<div class="ecoute-prog"><div class="ecoute-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="ecoute-counter">Phrase <strong style="color:var(--text)">'+((_ecouteIdx+1))+'</strong> / '+_ecouteCards.length+'</div>'
+      +'<div class="ecoute-card">'
+        +'<div class="ecoute-phrase" id="ecoutePhrase">'+escQ(c.phrase)+'</div>'
+        +'<div class="ecoute-translation">'+escQ(c.translation_fr)+'</div>'
+        +(c.phonetic_tips?'<div style="background:rgba(139,114,245,.08);border:1px solid rgba(139,114,245,.2);border-radius:10px;padding:8px 12px;font-size:11px;font-family:var(--mono,monospace);color:#8b72f5;margin-top:4px;text-align:left">💡 '+escQ(c.phonetic_tips)+'</div>':'')
+        +'<div style="margin-top:18px">'
+          +'<button class="ecoute-play-btn" id="ecoutePlayBtn" onclick="playEcouteAudio()">▶</button>'
+          +'<div style="font-size:10px;font-family:var(--mono,monospace);color:var(--muted);margin-top:8px" id="ecoutePlayCount">Touche ▶ pour écouter</div>'
+        +'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px">Écoute, puis répète à voix haute</div>'
+      +'<div class="ecoute-actions">'
+        +'<button class="ecoute-repeat-btn" onclick="playEcouteAudio()">↩ Réécouter</button>'
+        +'<button class="ecoute-ok-btn" onclick="ecouteNext()">✓ Répété !</button>'
+      +'</div>';
+    // Auto-play on load
+    setTimeout(function(){playEcouteAudio();},400);
 
-function _resetPronBtn(){
-  var btn=document.getElementById('pronRecordBtn');
-  var label=document.getElementById('pronRecordLabel');
-  var bars=document.querySelectorAll('.pron-bar');
-  if(btn){btn.classList.remove('recording','processing');btn.textContent='🎙️';btn.disabled=false;}
-  if(label)label.textContent='Appuie pour enregistrer';
-  bars.forEach(function(b){b.classList.remove('active');});
-  PRON.isRecording=false;PRON.isStopping=false;
-}
-
-async function togglePronRecording(){
-  if(PRON.isStopping)return;
-  if(PRON.isRecording){stopPronRecording();}
-  else{await startPronRecording();}
-}
-
-async function startPronRecording(){
-  if(!PRON.phrase){showToast('Génère d\'abord une phrase','error');return;}
-  var btn=document.getElementById('pronRecordBtn');
-  var label=document.getElementById('pronRecordLabel');
-  var bars=document.querySelectorAll('.pron-bar');
-  try{
-    var stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-    PRON.audioChunks=[];PRON.transcript='';PRON.transcriptConfidence=0;
-    var opts={};
-    if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))opts.mimeType='audio/webm;codecs=opus';
-    else if(MediaRecorder.isTypeSupported('audio/webm'))opts.mimeType='audio/webm';
-    PRON.mediaRecorder=new MediaRecorder(stream,opts);
-    PRON.mediaRecorder.ondataavailable=function(e){if(e.data.size>0)PRON.audioChunks.push(e.data);};
-    PRON.mediaRecorder.onstop=function(){
-      stream.getTracks().forEach(function(t){t.stop();});
-      PRON.audioBlob=new Blob(PRON.audioChunks,{type:PRON.mediaRecorder.mimeType||'audio/webm'});
-      _processPronRecording();
-    };
-    PRON.mediaRecorder.start(100);
-    PRON.isRecording=true;
-    _startSpeechRec();
-    btn.classList.add('recording');btn.textContent='⏹';
-    label.textContent='Enregistrement… (appuie pour arrêter)';
-    bars.forEach(function(b){b.classList.add('active');});
-    setTimeout(function(){if(PRON.isRecording)stopPronRecording();},12000);
-  }catch(e){
-    showToast('Microphone inaccessible: '+e.message,'error');
+  }else{
+    // Dictée mode — hide phrase, show play button + input
+    area.innerHTML='<div class="ecoute-prog"><div class="ecoute-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="ecoute-counter">Phrase <strong style="color:var(--text)">'+((_ecouteIdx+1))+'</strong> / '+_ecouteCards.length+'</div>'
+      +'<div class="ecoute-card">'
+        +'<div style="font-size:40px;margin-bottom:12px">🎵</div>'
+        +'<div style="font-size:13px;color:var(--muted);margin-bottom:16px">Écoute et écris ce que tu entends</div>'
+        +'<button class="ecoute-play-btn" id="ecoutePlayBtn" onclick="playEcouteAudio()">▶</button>'
+        +'<div style="font-size:10px;font-family:var(--mono,monospace);color:var(--muted);margin-top:8px" id="ecoutePlayCount">Touche ▶ pour écouter</div>'
+        +'<input type="text" class="dictee-input" id="dicteeInput" placeholder="Écris la phrase…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>'
+      +'</div>'
+      +'<button class="gen-btn" style="width:100%;padding:15px;font-size:15px;border-radius:12px" onclick="checkDictee()">Vérifier →</button>'
+      +'<div id="dicteeResult" style="margin-top:12px"></div>';
+    setTimeout(function(){playEcouteAudio();},400);
   }
 }
 
-function _startSpeechRec(){
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  try{
-    PRON.recognition=new SR();
-    PRON.recognition.continuous=false;
-    PRON.recognition.interimResults=false;
-    PRON.recognition.lang=_lang==='en'?'en-US':'es-ES';
-    PRON.recognition.maxAlternatives=1;
-    PRON.recognition.onresult=function(ev){
-      if(ev.results&&ev.results.length>0){
-        PRON.transcript=ev.results[0][0].transcript||'';
-        PRON.transcriptConfidence=ev.results[0][0].confidence||0;
-      }
-    };
-    PRON.recognition.onerror=function(e){if(e.error!=='aborted')console.warn('SR:',e.error);};
-    PRON.recognition.start();
-  }catch(e){console.warn('SR init:',e);}
+function playEcouteAudio(){
+  if(!_ecouteCards.length)return;
+  var c=_ecouteCards[_ecouteIdx];
+  if(!c||!c.phrase)return;
+  // Cancel any current speech
+  window.speechSynthesis.cancel();
+  var utt=new SpeechSynthesisUtterance(c.phrase);
+  utt.lang=_ecouteLang||(_lang==='en'?'en-GB':'es-ES');
+  utt.rate=0.85;
+  utt.pitch=1;
+  // Try to get a native voice
+  var voices=window.speechSynthesis.getVoices();
+  var nativeVoice=voices.find(function(v){return v.lang.startsWith(_lang==='en'?'en':'es')&&!v.localService===false;})||
+                  voices.find(function(v){return v.lang.startsWith(_lang==='en'?'en':'es');});
+  if(nativeVoice)utt.voice=nativeVoice;
+
+  var btn=document.getElementById('ecoutePlayBtn');
+  if(btn)btn.classList.add('playing');
+  utt.onend=function(){if(btn)btn.classList.remove('playing');};
+  utt.onerror=function(){if(btn)btn.classList.remove('playing');};
+
+  _ecoutePlayCount++;
+  var countEl=document.getElementById('ecoutePlayCount');
+  if(countEl)countEl.textContent='Écoute n°'+_ecoutePlayCount+' — '+(_ecoutePlayCount===1?'maintenant répète à voix haute':'réécoute si besoin');
+
+  window.speechSynthesis.speak(utt);
 }
 
-function stopPronRecording(){
-  if(!PRON.isRecording)return;
-  PRON.isStopping=true;
-  var btn=document.getElementById('pronRecordBtn');
-  var label=document.getElementById('pronRecordLabel');
-  btn.classList.remove('recording');btn.classList.add('processing');
-  btn.textContent='⏳';btn.disabled=true;
-  label.textContent='Analyse en cours…';
-  document.querySelectorAll('.pron-bar').forEach(function(b){b.classList.remove('active');});
-  if(PRON.recognition){try{PRON.recognition.stop();}catch(e){}}
-  if(PRON.mediaRecorder&&PRON.mediaRecorder.state!=='inactive')PRON.mediaRecorder.stop();
-  PRON.isRecording=false;
+function ecouteNext(){
+  window.speechSynthesis.cancel();
+  _ecouteIdx++;
+  addXP(5);
+  saveProgress();
+  renderEcouteCard();
 }
 
-async function _analyzeAudioFeatures(blob){
-  try{
-    var ab=await blob.arrayBuffer();
-    var AC=window.AudioContext||window.webkitAudioContext;
-    if(!AC)return null;
-    var ctx=new AC();
-    var buf=await ctx.decodeAudioData(ab);
-    ctx.close();
-    var ch=buf.getChannelData(0);
-    var sr=buf.sampleRate;
-    var dur=buf.duration;
-    var frameSize=Math.floor(sr*0.02);
-    var energies=[];
-    for(var i=0;i<ch.length;i+=frameSize){
-      var end=Math.min(i+frameSize,ch.length);
-      var rms=0;
-      for(var j=i;j<end;j++)rms+=ch[j]*ch[j];
-      energies.push(Math.sqrt(rms/(end-i)));
-    }
-    var THRESH=0.015;
-    var speechF=0,pauseCount=0,inSil=false,silLen=0;
-    for(var k=0;k<energies.length;k++){
-      if(energies[k]<THRESH){silLen++;inSil=true;}
-      else{if(inSil&&silLen>15)pauseCount++;silLen=0;inSil=false;speechF++;}
-    }
-    var speechDur=speechF*0.02;
-    var syllEst=Math.max(1,Math.round(speechDur*4));
-    var maxE=Math.max.apply(null,energies);
-    var avgE=energies.reduce(function(s,v){return s+v;},0)/energies.length;
-    return{
-      duration:dur.toFixed(1),
-      speechDuration:speechDur.toFixed(1),
-      pauseCount:pauseCount,
-      speechRate:(dur>0?(syllEst/dur).toFixed(1):0),
-      volumeConsistency:(maxE>0?(avgE/maxE*100).toFixed(0):0),
-      syllableEstimate:syllEst
-    };
-  }catch(e){console.warn('audio analysis:',e);return null;}
+function checkDictee(){
+  var input=document.getElementById('dicteeInput');
+  if(!input)return;
+  var userAnswer=input.value.trim();
+  if(!userAnswer){showToast('✏️ Écris la phrase','info');return;}
+  var c=_ecouteCards[_ecouteIdx];
+  var correct=c.phrase;
+
+  var userWords=userAnswer.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/\s+/).filter(Boolean);
+  var refWords=correct.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[¿¡.,!?]/g,'').split(/\s+/).filter(Boolean);
+  var correctWords=correct.split(/\s+/);
+
+  var matches=0;
+  var wordHtml=correctWords.map(function(w,i){
+    var wNorm=w.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[¿¡.,!?]/g,'');
+    var found=userWords.indexOf(wNorm)>-1;
+    if(found)matches++;
+    return '<span class="dictee-word '+(found?'ok':'ko')+'">'+escQ(w)+'</span>';
+  }).join(' ');
+
+  var pct=refWords.length>0?Math.round((matches/refWords.length)*100):0;
+  var ok=pct>=80;
+  if(ok)addXP(10);else addXP(3);
+  saveProgress();
+
+  input.disabled=true;
+  var result=document.getElementById('dicteeResult');
+  if(!result)return;
+  result.innerHTML='<div class="feedback-outside '+(ok?'ok-outside':'')+'">'
+    +'<div class="feedback-outside-title '+(ok?'ok-title':'ko-title')+'">'+(ok?'✓ Bien joué !':'✗ Presque...')+'</div>'
+    +'<div style="font-size:13px;margin-bottom:8px">Phrase correcte :</div>'
+    +'<div style="font-size:16px;line-height:1.6;margin-bottom:10px">'+wordHtml+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:12px">'+c.translation_fr+'</div>'
+    +'<div style="font-size:12px;font-family:var(--mono,monospace);color:'+(ok?'var(--success)':'var(--accent)')+';margin-bottom:14px">Score : '+pct+'%</div>'
+    +'<button class="ecoute-ok-btn" style="width:100%;padding:14px" onclick="ecouteNext()">→ Phrase suivante</button>'
+    +'</div>';
+  result.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-async function _processPronRecording(){
-  await new Promise(function(r){setTimeout(r,700);});
-  PRON.audioMetrics=await _analyzeAudioFeatures(PRON.audioBlob);
-  await _callPronAPI();
+function restartEcoute(){
+  _ecouteIdx=0;
+  renderEcouteCard();
 }
 
-async function _callPronAPI(){
-  var key=getKey();
-  if(!key){showToast('🔑 Clé API manquante','error');_resetPronBtn();return;}
-  if(!PRON.phrase){_resetPronBtn();return;}
-  var lang=_lang==='en'?'anglais':'espagnol';
-  var target=PRON.phrase.text;
-  var transcript=PRON.transcript||'(non capté)';
-  var m=PRON.audioMetrics;
-  var metricsText=m?('\nDonnées audio mesurées directement sur l\'enregistrement:\n- Durée: '+m.duration+'s\n- Parole active: '+m.speechDuration+'s\n- Pauses (>300ms): '+m.pauseCount+'\n- Débit estimé: '+m.speechRate+' syllabes/sec\n- Cohérence volume: '+m.volumeConsistency+'%\n- Syllabes estimées: '+m.syllableEstimate):'';
-  var confText=PRON.transcriptConfidence>0?('\nConfiance reconnaissance vocale: '+Math.round(PRON.transcriptConfidence*100)+'%'):'';
-  var prompt='Tu es un expert phonétique. Un apprenant français prononce une phrase en '+lang+'.\n\nPHRASE CIBLE: "'+target+'"\nCE QUI A ÉTÉ ENTENDU (SpeechRecognition): "'+transcript+'"'+confText+metricsText+'\n\nDonne une analyse en JSON UNIQUEMENT:\n{"score":85,"grade":"Bien","words":[{"word":"mot","status":"ok|warn|err"}],"corrections":"erreurs et corrections en français (max 80 mots)","tip":"conseil concret en français (max 35 mots)","rhythm_comment":"commentaire sur le rythme/débit en français (max 25 mots)"}\n\nRègles:\n- score basé sur: mots reconnus correctement, débit naturel, pauses appropriées\n- status ok=bien prononcé, warn=approximatif, err=très incorrect ou absent\n- UNIQUEMENT du JSON valide, sans markdown';
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:450,messages:[{role:'user',content:prompt}]})
-    });
-    if(!res.ok)throw new Error('Erreur '+res.status);
-    var data=await res.json();
-    var raw=data.content.map(function(b){return b.text||'';}).join('');
-    var match=raw.match(/\{[\s\S]*\}/);
-    if(!match)throw new Error('Format invalide');
-    var result=JSON.parse(match[0]);
-    PRON.analysisResult=result;
-    _renderPronResult(result);
-  }catch(e){
-    showToast('Erreur analyse: '+e.message,'error');
-    _resetPronBtn();
-  }
-}
-
-function _renderPronResult(result){
-  var score=result.score||0;
-  var grade=result.grade||(score>=80?'Excellent':score>=60?'Bien':'À améliorer');
-  var gClass=score>=80?'excellent':score>=60?'good':'poor';
-  var m=PRON.audioMetrics;
-  var wordsHtml='';
-  if(result.words&&result.words.length){
-    wordsHtml=result.words.map(function(w){
-      var cls=w.status==='ok'?'ok':w.status==='warn'?'warn':'err';
-      var icon=w.status==='ok'?'':w.status==='warn'?' ⚠':' ✗';
-      return '<span class="pron-word-chip '+cls+'">'+_escHtml(w.word)+icon+'</span>';
-    }).join('');
-  }
-  var metricsHtml=m?('<div class="pron-metrics"><div class="pron-metric"><div class="pron-metric-val">'+m.duration+'s</div><div class="pron-metric-lbl">Durée</div></div><div class="pron-metric"><div class="pron-metric-val">'+m.speechRate+'</div><div class="pron-metric-lbl">Syl./sec</div></div><div class="pron-metric"><div class="pron-metric-val">'+m.pauseCount+'</div><div class="pron-metric-lbl">Pauses</div></div></div>'):'';
-  var transcriptHtml=PRON.transcript?('<div class="pron-section-title">Reconnu</div><div style="font-size:14px;color:var(--muted);font-style:italic;margin-bottom:14px;padding:8px 12px;background:var(--card-bg);border-radius:8px">"'+_escHtml(PRON.transcript)+'"</div>'):'';
-  var html='<div class="pron-score-row"><div><div class="pron-score-num">'+score+'</div><div class="pron-score-label">Score / 100</div></div><span class="pron-score-badge '+gClass+'">'+_escHtml(grade)+'</span></div>'+
-    metricsHtml+
-    (wordsHtml?'<div class="pron-analysis-section"><div class="pron-section-title">Mot par mot</div><div class="pron-words-row">'+wordsHtml+'</div></div>':'')+
-    transcriptHtml+
-    (result.corrections?'<div class="pron-section-title">Corrections</div><div class="pron-feedback-block">'+_escHtml(result.corrections)+'</div>':'')+
-    (result.tip?'<div class="pron-section-title">Conseil</div><div class="pron-feedback-block" style="border-color:var(--success)">'+_escHtml(result.tip)+'</div>':'')+
-    (result.rhythm_comment?'<div class="pron-section-title">Rythme</div><div class="pron-feedback-block" style="border-color:var(--b1)">'+_escHtml(result.rhythm_comment)+'</div>':'');
-  document.getElementById('pronResult').innerHTML=html;
-  document.getElementById('pronResultArea').style.display='block';
-  document.getElementById('pronPhraseArea').style.display='none';
-  _resetPronBtn();
-}
-
-function retryPronPhrase(){
-  document.getElementById('pronResultArea').style.display='none';
-  document.getElementById('pronPhraseArea').style.display='block';
-  _resetPronBtn();
+function newEcouteSession(){
+  _ecouteCards=[];
+  _ecouteIdx=0;
+  var setup=document.getElementById('ecouteSetup');
+  var area=document.getElementById('ecouteExercise');
+  if(setup)setup.style.display='block';
+  if(area){area.innerHTML='';area.style.display='none';}
+  var inp=document.getElementById('ecouteTopicInput');
+  if(inp){inp.value='';inp.focus();}
 }
 
 function init(){
-  // Migrate daily streak from per-language to global (one-time)
-  if(!localStorage.getItem('fl_daily')){
-    try{
-      var best={dailyDate:'',dailyStreak:0,dailyXp:0};
-      ['espanol_v1','english_v1'].forEach(function(key){
-        var raw=localStorage.getItem(key);if(!raw)return;
-        var d=JSON.parse(raw);
-        if((d.dailyStreak||0)>(best.dailyStreak||0)){
-          best.dailyDate=d.dailyDate||'';
-          best.dailyStreak=d.dailyStreak||0;
-          best.dailyXp=d.dailyXp||0;
-        }
-      });
-      if(best.dailyStreak>0)localStorage.setItem('fl_daily',JSON.stringify(best));
-    }catch(e){}
-  }
   loadProgress();
   renderEmptyState();updateStats();updateProgress();
 
@@ -3828,6 +3781,8 @@ function init(){
   });
 
   document.getElementById('topicInput').addEventListener('keydown',function(e){if(e.key==='Enter')generateCards();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBurgerMenu();});
+  renderEcoStats();
 }
 init();
 </script>
